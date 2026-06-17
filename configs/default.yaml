@@ -1,0 +1,46 @@
+project:
+  name: PICASSO-CSI
+  target_paper: "PICASSO: Physics-Informed Channel Synthesis from Sparse Pilot Observations"
+  target_journal: IEEE Communications Letters
+
+task:
+  scenario: MIMO-OFDM sparse-pilot CSI reconstruction
+  input: low-pilot LS channel estimates
+  output: full CSI
+  pilot_ratios:
+    - 0.5
+    - 0.25
+    - 0.125
+    - 0.0625
+
+method:
+  generator: placeholder
+  discriminator: placeholder
+  losses:
+    - reconstruction_loss
+    - adversarial_loss
+    - pilot_consistency_loss
+    - time_frequency_smoothness_loss
+    - multipath_sparsity_loss
+
+data:
+  primary_simulator: self-built MIMO-OFDM simulation
+  optional_simulators:
+    - 3GPP CDL-A
+    - 3GPP CDL-B
+    - 3GPP CDL-C
+    - QuaDRiGa
+
+baselines:
+  required:
+    - LS
+    - LMMSE
+    - OMP
+    - CNN
+    - DnCNN
+    - GAN without physics
+    - PINN without GAN
+  optional:
+    - CsiNet
+    - CRNet
+    - Transformer

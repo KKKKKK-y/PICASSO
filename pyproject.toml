@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "picasso-csi"
+version = "0.1.0"
+description = "Physics-informed channel synthesis from sparse pilot observations for CSI reconstruction."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Xiaokai Yan" }
+]
+dependencies = [
+  "numpy",
+  "scipy",
+  "pandas",
+  "openpyxl",
+  "matplotlib",
+  "pyyaml",
+  "tqdm",
+  "torch"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
