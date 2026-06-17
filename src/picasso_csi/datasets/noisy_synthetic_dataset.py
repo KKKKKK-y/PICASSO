@@ -1,4 +1,4 @@
-"""Noise-aware synthetic CSI dataset for Stage 2A experiments."""
+"""Noise-aware synthetic CSI dataset for Stage 2 experiments."""
 
 from __future__ import annotations
 
@@ -10,9 +10,6 @@ from picasso_csi.simulation import (
     create_pilot_mask,
     generate_mimo_ofdm_channel,
 )
-
-
-SUPPORTED_SNR_DB = (10, 20, 30)
 
 
 class NoisySyntheticCSIDataset(Dataset):
@@ -28,6 +25,13 @@ class NoisySyntheticCSIDataset(Dataset):
         pilot_ratio: float = 0.25,
         snr_db: int | float = 20,
         seed: int = 42,
+        random_n_paths: bool = False,
+        min_paths: int = 3,
+        max_paths: int = 10,
+        delay_spread: float | str = 1.0,
+        gain_distribution: str = "complex_gaussian",
+        normalize_channel: bool = False,
+        pilot_noise_only: bool = True,
     ) -> None:
         self.num_samples = _validate_positive("num_samples", num_samples)
         self.n_tx = _validate_positive("n_tx", n_tx)
@@ -37,6 +41,15 @@ class NoisySyntheticCSIDataset(Dataset):
         self.pilot_ratio = float(pilot_ratio)
         self.snr_db = _validate_snr(snr_db)
         self.seed = seed
+        self.random_n_paths = bool(random_n_paths)
+        self.min_paths = _validate_positive("min_paths", min_paths)
+        self.max_paths = _validate_positive("max_paths", max_paths)
+        if self.min_paths > self.max_paths:
+            raise ValueError("min_paths must be <= max_paths.")
+        self.delay_spread = delay_spread
+        self.gain_distribution = gain_distribution
+        self.normalize_channel = bool(normalize_channel)
+        self.pilot_noise_only = bool(pilot_noise_only)
         self._mask_np = create_pilot_mask(
             n_rx=self.n_rx,
             n_tx=self.n_tx,
@@ -68,8 +81,11 @@ class NoisySyntheticCSIDataset(Dataset):
                 n_tx=self.n_tx,
                 n_rx=self.n_rx,
                 n_subcarriers=self.n_subcarriers,
-                n_paths=self.n_paths,
+                n_paths=self._sample_n_paths(index),
                 seed=self.seed + index,
+                delay_spread=self.delay_spread,
+                gain_distribution=self.gain_distribution,
+                normalize_channel=self.normalize_channel,
             )
             H_sparse = self._apply_noisy_pilot_observation(H_full, index)
             H_full_list.append(_to_channel_first_tensor(H_full))
@@ -82,15 +98,22 @@ class NoisySyntheticCSIDataset(Dataset):
         )
 
     def _apply_noisy_pilot_observation(self, H_full: np.ndarray, index: int) -> np.ndarray:
-        observed = self._mask_np > 0.0
-        signal_values = H_full[observed]
-        signal_power = float(np.mean(signal_values**2)) if signal_values.size else 0.0
+        observed = self._mask_np > 0.0 if self.pilot_noise_only else np.ones_like(self._mask_np, dtype=bool)
+        pilot_observed = self._mask_np > 0.0
+        signal_values = H_full[pilot_observed]
+        signal_power = float(np.mean(signal_values**2)) if signal_values.size else float(np.mean(H_full**2))
         noise_power = signal_power / (10.0 ** (self.snr_db / 10.0))
         noise_std = float(np.sqrt(max(noise_power, 0.0)))
         rng = np.random.default_rng(self.seed + 1_000_003 + index)
         noise = np.zeros_like(H_full, dtype=np.float32)
         noise[observed] = rng.normal(loc=0.0, scale=noise_std, size=int(observed.sum()))
-        return (H_full * self._mask_np + noise * self._mask_np).astype(np.float32)
+        return ((H_full + noise) * self._mask_np).astype(np.float32)
+
+    def _sample_n_paths(self, index: int) -> int:
+        if not self.random_n_paths:
+            return self.n_paths
+        rng = np.random.default_rng(self.seed + 2_000_033 + index)
+        return int(rng.integers(self.min_paths, self.max_paths + 1))
 
 
 def _to_channel_first_tensor(array: np.ndarray) -> torch.Tensor:
@@ -104,6 +127,7 @@ def _validate_positive(name: str, value: int) -> int:
 
 
 def _validate_snr(value: int | float) -> float:
-    if float(value) not in tuple(float(v) for v in SUPPORTED_SNR_DB):
-        raise ValueError(f"snr_db must be one of {SUPPORTED_SNR_DB}, got {value!r}.")
-    return float(value)
+    snr = float(value)
+    if not np.isfinite(snr):
+        raise ValueError(f"snr_db must be finite, got {value!r}.")
+    return snr

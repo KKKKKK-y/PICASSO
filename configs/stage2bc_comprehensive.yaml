@@ -1,0 +1,87 @@
+project:
+  name: PICASSO
+  stage: stage2bc_comprehensive
+
+system:
+  n_tx: 4
+  n_rx: 4
+  n_subcarriers: 64
+  n_paths: 6
+
+channel:
+  random_n_paths: true
+  min_paths: 3
+  max_paths: 10
+  delay_spread: random
+  gain_distribution: complex_gaussian
+  normalize_channel: true
+  pilot_noise_only: true
+
+data:
+  train_samples: 4096
+  val_samples: 1024
+  test_samples: 1024
+  batch_size: 64
+  seeds: [42, 123, 2026]
+  pilot_ratios: [0.5, 0.25, 0.125, 0.0625]
+  snr_db_values: [10, 20, 30]
+  save_generated_data: false
+
+training:
+  epochs_main: 20
+  epochs_diagnostic: 8
+  device: cuda
+  learning_rate_dncnn: 0.0001
+  learning_rate_g: 0.0001
+  learning_rate_d: 0.0001
+  early_stop_patience: 5
+  max_runtime_hours: 5
+
+models:
+  run_ls: true
+  run_dncnn: true
+  run_cond_dncnn: true
+  run_enhanced_dncnn: true
+  run_picasso_rec: true
+  run_picasso_rec_physics: true
+  run_picasso_rec_adv: true
+  run_picasso_full: true
+  run_picasso_cond_full: true
+
+loss:
+  lambda_rec: 1.0
+  lambda_adv: 0.005
+  lambda_pilot: 1.0
+  lambda_smooth: 0.05
+  lambda_sparse: 0.05
+
+diagnosis:
+  allow_full_grid: true
+  allow_reduced_grid_if_runtime_high: true
+  full_grid_max_hours: 5
+  reduced_grid_seeds: [42, 123]
+  reduced_grid_pilot_ratios: [0.25, 0.125, 0.0625]
+  reduced_grid_snr_db_values: [10, 20]
+  reduced_train_samples: 512
+  reduced_test_samples: 256
+  reduced_epochs_main: 3
+  reduced_epochs_diagnostic: 2
+  diagnostic_loss_modes: [rec_only, rec_physics, rec_adv, full]
+
+artifact_policy:
+  save_checkpoints: false
+  save_outputs: false
+  save_numpy_arrays: false
+  save_csv_results: true
+  save_markdown_report: true
+
+outputs:
+  results_dir: outputs/results
+  raw_csv: stage2bc_raw_results.csv
+  summary_csv: stage2bc_summary.csv
+  ablation_csv: stage2bc_ablation.csv
+  diagnosis_csv: stage2bc_diagnosis.csv
+  paper_table_csv: stage2bc_paper_table.csv
+  nmse_by_pilot_csv: stage2bc_nmse_by_pilot.csv
+  nmse_by_snr_csv: stage2bc_nmse_by_snr.csv
+  analysis_md: docs/stage2bc_results_analysis.md

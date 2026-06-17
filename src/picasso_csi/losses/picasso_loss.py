@@ -39,14 +39,23 @@ def picasso_generator_loss(
     lambda_pilot: float = 1.0,
     lambda_smooth: float = 0.1,
     lambda_sparse: float = 0.1,
+    loss_mode: str = "full",
 ) -> dict[str, torch.Tensor]:
     """Return weighted PICASSO generator loss components."""
 
     _validate_same_shape(H_hat, H_true)
     _validate_same_shape(H_hat, H_sparse)
     _validate_same_shape(H_hat, mask)
+    weights = _resolve_loss_weights(
+        loss_mode=loss_mode,
+        lambda_rec=lambda_rec,
+        lambda_adv=lambda_adv,
+        lambda_pilot=lambda_pilot,
+        lambda_smooth=lambda_smooth,
+        lambda_sparse=lambda_sparse,
+    )
     rec_loss = reconstruction_loss(H_hat, H_true, mode="l1")
-    if fake_logits is None:
+    if fake_logits is None or weights["adv"] == 0.0:
         adv_loss = H_hat.new_zeros(())
     else:
         adv_loss = generator_bce_loss(fake_logits)
@@ -59,11 +68,11 @@ def picasso_generator_loss(
     sparse_loss = delay_sparsity_loss(H_hat_physics)
 
     total_loss = (
-        lambda_rec * rec_loss
-        + lambda_adv * adv_loss
-        + lambda_pilot * pilot_loss
-        + lambda_smooth * smooth_loss
-        + lambda_sparse * sparse_loss
+        weights["rec"] * rec_loss
+        + weights["adv"] * adv_loss
+        + weights["pilot"] * pilot_loss
+        + weights["smooth"] * smooth_loss
+        + weights["sparse"] * sparse_loss
     )
     return {
         "total": total_loss,
@@ -73,6 +82,35 @@ def picasso_generator_loss(
         "smooth": smooth_loss,
         "sparse": sparse_loss,
     }
+
+
+def _resolve_loss_weights(
+    loss_mode: str,
+    lambda_rec: float,
+    lambda_adv: float,
+    lambda_pilot: float,
+    lambda_smooth: float,
+    lambda_sparse: float,
+) -> dict[str, float]:
+    mode = loss_mode.lower()
+    weights = {
+        "rec": float(lambda_rec),
+        "adv": float(lambda_adv),
+        "pilot": float(lambda_pilot),
+        "smooth": float(lambda_smooth),
+        "sparse": float(lambda_sparse),
+    }
+    if mode == "rec_only":
+        weights.update({"adv": 0.0, "pilot": 0.0, "smooth": 0.0, "sparse": 0.0})
+    elif mode == "rec_physics":
+        weights["adv"] = 0.0
+    elif mode == "rec_adv":
+        weights.update({"pilot": 0.0, "smooth": 0.0, "sparse": 0.0})
+    elif mode == "full":
+        pass
+    else:
+        raise ValueError(f"Unsupported PICASSO loss_mode {loss_mode!r}.")
+    return weights
 
 
 def _to_channel_last(tensor: torch.Tensor) -> torch.Tensor:

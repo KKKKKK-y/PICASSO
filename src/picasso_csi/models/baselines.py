@@ -6,6 +6,8 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+from picasso_csi.models.conditioning import make_condition_channels
+
 
 def ls_baseline(H_sparse: torch.Tensor, mask: torch.Tensor | None = None) -> torch.Tensor:
     """Return sparse observations directly as an LS-style estimate."""
@@ -132,11 +134,15 @@ class DnCNNBaseline(nn.Module):
         output_channels: int = 2,
         hidden_channels: int = 32,
         depth: int = 5,
+        use_condition: bool = False,
     ) -> None:
         super().__init__()
         if depth < 3:
             raise ValueError("depth must be at least 3.")
 
+        self.use_condition = bool(use_condition)
+        if self.use_condition and input_channels == 4:
+            input_channels = 6
         layers: list[nn.Module] = [
             nn.Conv2d(input_channels, hidden_channels, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
@@ -151,15 +157,49 @@ class DnCNNBaseline(nn.Module):
         layers.append(nn.Conv2d(hidden_channels, output_channels, kernel_size=3, padding=1))
         self.net = nn.Sequential(*layers)
 
-    def forward(self, H_sparse: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
+    def forward(
+        self,
+        H_sparse: torch.Tensor,
+        mask: torch.Tensor,
+        snr_db: float | torch.Tensor | None = None,
+        pilot_ratio: float | torch.Tensor | None = None,
+    ) -> torch.Tensor:
         _validate_csi_pair(H_sparse, mask)
         batched, H_sparse_b = _ensure_batched(H_sparse)
         _, mask_b = _ensure_batched(mask)
         model_input, shape = _flatten_antenna_grid(H_sparse_b, mask_b)
+        if self.use_condition:
+            if snr_db is None or pilot_ratio is None:
+                raise ValueError("snr_db and pilot_ratio are required when use_condition=True.")
+            condition = make_condition_channels(
+                model_input.shape[0],
+                model_input.shape[2],
+                model_input.shape[3],
+                snr_db,
+                pilot_ratio,
+                device=model_input.device,
+            )
+            model_input = torch.cat([model_input, condition], dim=1)
         residual = self.net(model_input)
         residual = _restore_antenna_grid(residual, shape)
         output = H_sparse_b + residual
         return output if batched else output.squeeze(0)
+
+
+class EnhancedDnCNNBaseline(DnCNNBaseline):
+    """Slightly wider/deeper residual CNN for Stage 2BC diagnostics."""
+
+    def __init__(
+        self,
+        hidden_channels: int = 64,
+        depth: int = 8,
+        use_condition: bool = False,
+    ) -> None:
+        super().__init__(
+            hidden_channels=hidden_channels,
+            depth=depth,
+            use_condition=use_condition,
+        )
 
 
 def _nearest_interpolate(values: torch.Tensor, observed: torch.Tensor) -> torch.Tensor:

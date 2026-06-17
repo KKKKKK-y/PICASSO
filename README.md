@@ -66,6 +66,12 @@ Stage 2A adds noise-aware sparse pilot observations and a small formal
 experiment protocol across pilot ratios, SNR values, and LS/DnCNN/PICASSO
 methods. It saves only a compact metrics CSV.
 
+Stage 2B-2C adds a comprehensive diagnostic experiment pack with random channel
+difficulty controls, condition-aware inputs, stronger DnCNN/PICASSO variants,
+multi-seed reduced-grid evaluation, loss ablations, paper-style CSV tables, and
+Markdown analysis. These runs are still small-scale diagnostics, not final paper
+results.
+
 Run the Stage 1B smoke evaluation from the repository root:
 
 ```powershell
@@ -84,10 +90,25 @@ Run the Stage 2A small formal protocol:
 conda run -n picasso python src/picasso_csi/training/run_stage2a_small_formal.py --config configs/stage2a_small_formal.yaml
 ```
 
+Run the Stage 2B-2C comprehensive diagnostic protocol:
+
+```powershell
+conda run -n picasso python src/picasso_csi/training/run_stage2bc_comprehensive.py --config configs/stage2bc_comprehensive.yaml
+```
+
+Stage 2B-2C features:
+
+- Condition-aware training with normalized SNR and pilot-ratio channels.
+- Random path count, random delay spread, normalized synthetic channels, and pilot-only AWGN.
+- LS, DnCNN, Cond-DnCNN, Enhanced-DnCNN, and PICASSO loss-mode variants.
+- Reduced-grid fallback when the full grid is estimated to exceed the runtime budget.
+- Lightweight CSV outputs under `outputs/results/*.csv` and Markdown reports under `docs/`.
+
 ## Artifact Policy
 
 - Do not commit raw datasets.
 - Do not commit model checkpoints.
 - Do not commit generated outputs.
 - Stage 2A may commit only compact CSV metrics under `outputs/results/*.csv`.
+- Stage 2B-2C may commit only compact CSV metrics under `outputs/results/*.csv`.
 - Keep only configuration files, source code, documentation, and lightweight survey files.

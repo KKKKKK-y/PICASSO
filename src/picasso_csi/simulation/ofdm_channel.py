@@ -16,6 +16,9 @@ def generate_mimo_ofdm_channel(
     n_subcarriers: int,
     n_paths: int,
     seed: int | None = None,
+    delay_spread: float | str = 1.0,
+    gain_distribution: str = "complex_gaussian",
+    normalize_channel: bool = False,
 ) -> np.ndarray:
     """Generate a synthetic frequency-domain MIMO-OFDM channel.
 
@@ -37,17 +40,37 @@ def generate_mimo_ofdm_channel(
     _validate_positive("n_paths", n_paths)
 
     rng = np.random.default_rng(seed)
+    if gain_distribution != "complex_gaussian":
+        raise ValueError(f"Unsupported gain_distribution {gain_distribution!r}.")
+
+    spread = _resolve_delay_spread(delay_spread, rng)
     path_gains = (
         rng.standard_normal((n_rx, n_tx, n_paths))
         + 1j * rng.standard_normal((n_rx, n_tx, n_paths))
     ) / np.sqrt(2.0 * n_paths)
-    path_delays = rng.uniform(0.0, 1.0, size=n_paths)
+    path_delays = rng.uniform(0.0, spread, size=n_paths)
     subcarrier_index = np.arange(n_subcarriers, dtype=np.float64)
     phase = np.exp(-1j * 2.0 * np.pi * path_delays[:, None] * subcarrier_index[None, :])
     channel_complex = np.einsum("rtp,pk->rtk", path_gains, phase)
 
+    if normalize_channel:
+        rms = np.sqrt(np.mean(np.abs(channel_complex) ** 2))
+        if rms > 0:
+            channel_complex = channel_complex / rms
+
     channel = np.stack((channel_complex.real, channel_complex.imag), axis=-1)
     return channel.astype(np.float32)
+
+
+def _resolve_delay_spread(delay_spread: float | str, rng: np.random.Generator) -> float:
+    if isinstance(delay_spread, str):
+        if delay_spread.lower() != "random":
+            raise ValueError(f"Unsupported delay_spread {delay_spread!r}.")
+        return float(rng.uniform(0.25, 1.5))
+    spread = float(delay_spread)
+    if spread <= 0:
+        raise ValueError(f"delay_spread must be positive, got {delay_spread!r}.")
+    return spread
 
 
 def _validate_positive(name: str, value: int) -> None:

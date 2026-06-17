@@ -1,0 +1,6 @@
+comparison,winner,details
+condition_dncnn,Cond-DnCNN,DnCNN vs Cond-DnCNN overall NMSE
+enhanced_dncnn,DnCNN,DnCNN vs Enhanced-DnCNN overall NMSE
+physics_loss,PICASSO-rec,Supervised PICASSO with vs without physics loss
+adversarial_loss,PICASSO-rec,Supervised PICASSO with vs without adversarial loss
+condition_picasso,PICASSO-full,PICASSO full vs condition-aware full
