@@ -8,6 +8,9 @@ venv/
 
 outputs/*
 !outputs/.gitkeep
+!outputs/results/
+outputs/results/*
+!outputs/results/*.csv
 
 checkpoints/
 runs/

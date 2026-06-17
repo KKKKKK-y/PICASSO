@@ -62,6 +62,10 @@ Stage 1C adds PICASSO generator/discriminator skeletons, adversarial and
 physics-informed generator losses, smoke training, and multi-pilot-ratio smoke
 evaluation. These are integration checks, not final GAN results.
 
+Stage 2A adds noise-aware sparse pilot observations and a small formal
+experiment protocol across pilot ratios, SNR values, and LS/DnCNN/PICASSO
+methods. It saves only a compact metrics CSV.
+
 Run the Stage 1B smoke evaluation from the repository root:
 
 ```powershell
@@ -74,9 +78,16 @@ Run the Stage 1C PICASSO smoke loop:
 conda run -n picasso python src/picasso_csi/training/smoke_train_picasso.py --config configs/stage1c_picasso_smoke.yaml
 ```
 
+Run the Stage 2A small formal protocol:
+
+```powershell
+conda run -n picasso python src/picasso_csi/training/run_stage2a_small_formal.py --config configs/stage2a_small_formal.yaml
+```
+
 ## Artifact Policy
 
 - Do not commit raw datasets.
 - Do not commit model checkpoints.
 - Do not commit generated outputs.
+- Stage 2A may commit only compact CSV metrics under `outputs/results/*.csv`.
 - Keep only configuration files, source code, documentation, and lightweight survey files.

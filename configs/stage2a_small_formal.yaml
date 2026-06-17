@@ -1,0 +1,47 @@
+project:
+  name: PICASSO
+  stage: stage2a_small_formal
+
+system:
+  n_tx: 4
+  n_rx: 4
+  n_subcarriers: 64
+  n_paths: 6
+
+data:
+  train_samples: 1024
+  val_samples: 256
+  test_samples: 256
+  batch_size: 32
+  seed: 42
+  pilot_ratios: [0.5, 0.25, 0.125, 0.0625]
+  snr_db_values: [10, 20, 30]
+  save_generated_data: false
+
+training:
+  epochs: 5
+  learning_rate_g: 0.0001
+  learning_rate_d: 0.0001
+  device: cuda
+
+loss:
+  lambda_rec: 1.0
+  lambda_adv: 0.01
+  lambda_pilot: 1.0
+  lambda_smooth: 0.1
+  lambda_sparse: 0.1
+
+models:
+  run_ls: true
+  run_dncnn: true
+  run_picasso: true
+
+artifact_policy:
+  save_checkpoints: false
+  save_outputs: false
+  save_numpy_arrays: false
+  save_csv_results: true
+
+outputs:
+  results_dir: outputs/results
+  result_csv: stage2a_small_formal_results.csv
