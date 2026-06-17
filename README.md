@@ -50,7 +50,19 @@ The planned method combines:
 
 ## Current Status
 
-Literature survey and scenario selection stage. No training code or dataset is included yet.
+Stage 0 and Stage 1A are complete. The repository now includes lightweight
+MIMO-OFDM simulation interfaces, an in-memory synthetic CSI dataset, basic
+physics losses, CNN/DnCNN smoke baselines, and smoke-level metrics.
+
+Stage 1B adds a baseline evaluation suite for LS, LMMSE-like, OMP-like, CNN, and
+DnCNN baselines. These runs are code-path validation only; they are not formal
+paper experiments.
+
+Run the Stage 1B smoke evaluation from the repository root:
+
+```powershell
+conda run -n picasso python src/picasso_csi/training/evaluate_baselines.py --config configs/stage1b_baselines.yaml
+```
 
 ## Artifact Policy
 

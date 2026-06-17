@@ -1,4 +1,4 @@
-"""Tests for Stage 1A baselines and metrics."""
+"""Tests for Stage 1A/1B baselines."""
 
 from __future__ import annotations
 
@@ -13,11 +13,17 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from picasso_csi.datasets import SyntheticCSIDataset  # noqa: E402
-from picasso_csi.evaluation import mae, mse, nmse, pilot_consistency_error  # noqa: E402
-from picasso_csi.models import CNNBaseline, DnCNNBaseline, LSInterpolationBaseline  # noqa: E402
+from picasso_csi.models import (  # noqa: E402
+    CNNBaseline,
+    DnCNNBaseline,
+    LSInterpolationBaseline,
+    lmmse_like_baseline,
+    ls_baseline,
+    omp_like_baseline,
+)
 
 
-def test_stage1a_baseline_shapes_and_metrics() -> None:
+def test_stage1a_module_baseline_shapes() -> None:
     dataset = SyntheticCSIDataset(num_samples=2, seed=42)
     sample = dataset[0]
     H_sparse = sample["H_sparse"].unsqueeze(0)
@@ -34,14 +40,32 @@ def test_stage1a_baseline_shapes_and_metrics() -> None:
         H_hat = baseline(H_sparse, mask)
         assert H_hat.shape == H_full.shape
 
-    H_hat = baselines[1](H_sparse, mask)
-    metric_values = [
-        mse(H_hat, H_full),
-        mae(H_hat, H_full),
-        nmse(H_hat, H_full),
-        pilot_consistency_error(H_hat, H_sparse, mask),
+
+
+def test_stage1b_classical_baseline_shapes() -> None:
+    dataset = SyntheticCSIDataset(num_samples=2, seed=42)
+    sample = dataset[0]
+    H_sparse = sample["H_sparse"].unsqueeze(0)
+    H_full = sample["H_full"].unsqueeze(0)
+    mask = sample["mask"].unsqueeze(0)
+
+    estimates = [
+        ls_baseline(H_sparse, mask),
+        lmmse_like_baseline(H_sparse, mask),
+        omp_like_baseline(H_sparse, mask, n_paths=6),
     ]
-    for value in metric_values:
-        assert isinstance(value, torch.Tensor)
-        assert value.ndim == 0
-        assert torch.isfinite(value)
+
+    for H_hat in estimates:
+        assert H_hat.shape == H_full.shape
+        assert torch.isfinite(H_hat).all()
+
+
+def test_stage1b_non_batched_baseline_shapes() -> None:
+    dataset = SyntheticCSIDataset(num_samples=1, seed=13)
+    sample = dataset[0]
+    H_sparse = sample["H_sparse"]
+    mask = sample["mask"]
+
+    assert ls_baseline(H_sparse, mask).shape == H_sparse.shape
+    assert lmmse_like_baseline(H_sparse, mask).shape == H_sparse.shape
+    assert omp_like_baseline(H_sparse, mask, n_paths=6).shape == H_sparse.shape

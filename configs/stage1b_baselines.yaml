@@ -1,0 +1,23 @@
+project:
+  name: PICASSO
+  stage: stage1b_baseline_evaluation
+system:
+  n_tx: 4
+  n_rx: 4
+  n_subcarriers: 64
+  n_paths: 6
+  pilot_ratio: 0.25
+data:
+  num_samples: 256
+  batch_size: 32
+  seed: 42
+  save_generated_data: false
+evaluation:
+  run_classical: true
+  run_neural_smoke: true
+  neural_epochs: 2
+  device: cuda
+artifact_policy:
+  save_checkpoints: false
+  save_outputs: false
+  save_numpy_arrays: false

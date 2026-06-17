@@ -28,3 +28,4 @@ logs/
 data/raw/
 data/processed/
 data/generated/
+!data/.gitkeep

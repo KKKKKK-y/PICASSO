@@ -42,11 +42,51 @@ def pilot_consistency_error(
     return numerator / denominator
 
 
+def delay_domain_sparsity_score(H_hat: torch.Tensor, top_k: int = 6) -> torch.Tensor:
+    """Return delay-domain energy concentration in the strongest taps.
+
+    Higher values indicate that more energy is concentrated in a small number
+    of delay taps. Inputs use channel-first real-imaginary format with optional
+    batch dimension.
+    """
+
+    _validate_real_imag_tensor(H_hat)
+    if top_k <= 0:
+        raise ValueError(f"top_k must be positive, got {top_k!r}.")
+
+    channel_complex = _to_complex(H_hat)
+    delay_domain = torch.fft.ifft(channel_complex, dim=-1)
+    energy = torch.abs(delay_domain).pow(2)
+    n_taps = min(top_k, energy.shape[-1])
+    top_energy = torch.topk(energy, k=n_taps, dim=-1).values.sum(dim=-1)
+    total_energy = energy.sum(dim=-1).clamp_min(_eps(energy))
+    return torch.mean(top_energy / total_energy)
+
+
 def _validate_same_shape(lhs: torch.Tensor, rhs: torch.Tensor) -> None:
     if not isinstance(lhs, torch.Tensor) or not isinstance(rhs, torch.Tensor):
         raise TypeError("Metrics expect torch.Tensor inputs.")
     if lhs.shape != rhs.shape:
         raise ValueError(f"Tensor shapes must match, got {lhs.shape} and {rhs.shape}.")
+
+
+def _validate_real_imag_tensor(tensor: torch.Tensor) -> None:
+    if not isinstance(tensor, torch.Tensor):
+        raise TypeError("Metrics expect torch.Tensor inputs.")
+    if tensor.ndim not in (4, 5):
+        raise ValueError(
+            "CSI tensors must have shape (B, 2, n_rx, n_tx, n_subcarriers) "
+            "or (2, n_rx, n_tx, n_subcarriers)."
+        )
+    if tensor.shape[-4] != 2:
+        raise ValueError("CSI tensors must use two real-imaginary channels.")
+
+
+def _to_complex(tensor: torch.Tensor) -> torch.Tensor:
+    _validate_real_imag_tensor(tensor)
+    if tensor.ndim == 4:
+        return torch.complex(tensor[0], tensor[1])
+    return torch.complex(tensor[:, 0], tensor[:, 1])
 
 
 def _eps(tensor: torch.Tensor) -> float:
