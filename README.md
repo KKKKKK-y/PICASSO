@@ -58,10 +58,20 @@ Stage 1B adds a baseline evaluation suite for LS, LMMSE-like, OMP-like, CNN, and
 DnCNN baselines. These runs are code-path validation only; they are not formal
 paper experiments.
 
+Stage 1C adds PICASSO generator/discriminator skeletons, adversarial and
+physics-informed generator losses, smoke training, and multi-pilot-ratio smoke
+evaluation. These are integration checks, not final GAN results.
+
 Run the Stage 1B smoke evaluation from the repository root:
 
 ```powershell
 conda run -n picasso python src/picasso_csi/training/evaluate_baselines.py --config configs/stage1b_baselines.yaml
+```
+
+Run the Stage 1C PICASSO smoke loop:
+
+```powershell
+conda run -n picasso python src/picasso_csi/training/smoke_train_picasso.py --config configs/stage1c_picasso_smoke.yaml
 ```
 
 ## Artifact Policy
