@@ -109,7 +109,12 @@ class PICASSOGenerator(nn.Module):
 
 
 class PICASSODiscriminator(nn.Module):
-    """Patch-style CNN discriminator that emits one real/fake logit per sample."""
+    """Optional legacy GAN discriminator for ablation experiments.
+
+    Final-release experiments keep PICASSO-rec as the default supervised
+    reconstruction model; adversarial training is retained only for traceable
+    Stage 1C-3B diagnostics.
+    """
 
     def __init__(
         self,

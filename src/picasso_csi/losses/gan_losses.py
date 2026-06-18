@@ -1,4 +1,4 @@
-"""Adversarial losses for PICASSO smoke training."""
+"""Optional legacy adversarial losses for PICASSO smoke/ablation training."""
 
 from __future__ import annotations
 

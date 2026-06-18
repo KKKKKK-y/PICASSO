@@ -1,138 +1,72 @@
 # PICASSO-CSI
 
-Physics-Informed Channel Synthesis from Sparse Observations for CSI Reconstruction
+Physics-Informed Channel Synthesis from Sparse Pilot Observations
 
-## Overview
+PICASSO-CSI is a lightweight research codebase for sparse-pilot CSI reconstruction in OFDM and MIMO-OFDM systems. The project studies whether supervised and physics-guided neural reconstruction can recover full channel state information from sparse pilot observations under synthetic and CDL-inspired realistic wireless channels.
 
-PICASSO-CSI is a research repository for sparse-pilot CSI reconstruction in OFDM / MIMO-OFDM systems. The project studies whether a physics-informed generative model can reconstruct full channel state information from a small number of pilot observations.
+## Final Release Status
 
-## Research Objective
+Stages 0-4 are complete and traceable. The final default model is **PICASSO-rec**, a supervised residual reconstruction model. **PICASSO-rec-physics** is kept as the secondary physics-guided variant. **PICASSO-full / condition-aware full / GAN variants** are retained only as experimental ablations because adversarial training did not provide stable or consistent gains in the completed diagnostics.
 
-The first paper target is a lightweight and reproducible IEEE Communications Letters-style study on sparse-pilot CSI reconstruction. The intended task is:
-
-- Input: low-pilot LS channel estimates, pilot masks, and optional SNR/noise information.
-- Output: full CSI over the OFDM resource grid.
-- Goal: reduce pilot overhead while preserving reconstruction accuracy and physical consistency.
-
-## Target Paper
-
-Working title:
-
-PICASSO: Physics-Informed Channel Synthesis from Sparse Pilot Observations
-
-Target journal:
-
-IEEE Communications Letters
-
-## Proposed Method
-
-The planned method combines:
-
-- Sparse-pilot CSI reconstruction
-- GAN-based channel synthesis
-- Physics-informed constraints
-- OFDM / MIMO-OFDM channel model
-- Pilot consistency loss
-- Time-frequency smoothness loss
-- Multipath sparsity prior
+The final evidence supports supervised PICASSO reconstruction as the primary path. Physics constraints are useful for analysis and consistency checks, but their measured gain is limited after Stage 3B/4. GAN training is deprecated as a primary direction for this release.
 
 ## Repository Structure
 
-- `configs/`: lightweight experiment configuration files.
-- `data/`: dataset notes and placeholders only; no raw data should be committed.
-- `docs/`: project planning and literature summaries.
-- `literature/`: survey and scenario-selection spreadsheets.
-- `notebooks/`: exploratory notebooks, if needed later.
-- `scripts/`: command-line utilities, if needed later.
-- `src/picasso_csi/`: Python package skeleton.
-- `tests/`: future tests.
-- `outputs/`: local generated outputs; ignored except for `.gitkeep`.
+- `configs/`: stage-specific reproducible experiment configs.
+- `data/`: notes/placeholders only; no raw datasets are committed.
+- `docs/`: design notes, stage reports, final audit, and release summaries.
+- `literature/`: lightweight survey spreadsheets used for topic selection.
+- `src/picasso_csi/datasets/`: synthetic, noisy synthetic, and CDL-inspired datasets.
+- `src/picasso_csi/models/`: LS/LMMSE/OMP-style baselines, DnCNN variants, and PICASSO models.
+- `src/picasso_csi/losses/`: reconstruction, physics, and optional legacy GAN losses.
+- `src/picasso_csi/simulation/`: OFDM synthetic and CDL-inspired channel simulators plus pilot masks.
+- `src/picasso_csi/training/`: stage runners and smoke-level validation entry points.
+- `src/picasso_csi/evaluation/`: metrics and result-table helpers.
+- `tests/`: unit and integration smoke tests.
+- `outputs/results/`: committed lightweight CSV/Markdown result summaries only.
 
-## Current Status
+## Stage Trace
 
-Stage 0 and Stage 1A are complete. The repository now includes lightweight
-MIMO-OFDM simulation interfaces, an in-memory synthetic CSI dataset, basic
-physics losses, CNN/DnCNN smoke baselines, and smoke-level metrics.
+- **Stage 0-1A:** package skeleton, synthetic MIMO-OFDM channel generation, sparse pilot masks, datasets, physics losses, and smoke baselines.
+- **Stage 1B:** LS, LMMSE-like, OMP-like, CNN, and DnCNN baseline evaluation.
+- **Stage 1C:** PICASSO generator/discriminator skeletons, composite loss integration, and GAN smoke test.
+- **Stage 2A:** noise-aware small formal evaluation across pilot ratios and SNR.
+- **Stage 2B-2C:** diagnostic grid with random channel difficulty, condition-aware inputs, stronger baselines, ablations, and paper-style tables.
+- **Stage 3A:** supervised physics-guided reconstruction before full GAN training.
+- **Stage 3A-L:** larger controlled diagnostic including Enhanced-DnCNN, PICASSO-rec, PICASSO-rec-physics, PICASSO-full, and PICASSO-cond-full.
+- **Stage 3B:** incremental structural enhancement and physics-loss ablation.
+- **Stage 4:** CDL-inspired realistic wireless generalization with CDL-A/B/C, pilot pattern variation, pilot contamination, and mobility/Doppler diagnostics.
 
-Stage 1B adds a baseline evaluation suite for LS, LMMSE-like, OMP-like, CNN, and
-DnCNN baselines. These runs are code-path validation only; they are not formal
-paper experiments.
+## Recommended Usage
 
-Stage 1C adds PICASSO generator/discriminator skeletons, adversarial and
-physics-informed generator losses, smoke training, and multi-pilot-ratio smoke
-evaluation. These are integration checks, not final GAN results.
+Run unit/smoke tests:
 
-Stage 2A adds noise-aware sparse pilot observations and a small formal
-experiment protocol across pilot ratios, SNR values, and LS/DnCNN/PICASSO
-methods. It saves only a compact metrics CSV.
+```powershell
+conda run -n picasso python -m pytest
+```
 
-Stage 2B-2C adds a comprehensive diagnostic experiment pack with random channel
-difficulty controls, condition-aware inputs, stronger DnCNN/PICASSO variants,
-multi-seed reduced-grid evaluation, loss ablations, paper-style CSV tables, and
-Markdown analysis. These runs are still small-scale diagnostics, not final paper
-results.
+Run the final CDL Stage 4 protocol only when intentionally reproducing the Stage 4 experiment:
 
-Stage 3A shifts the emphasis to supervised physics-guided reconstruction before
-long full-GAN training. It compares LS, DnCNN, Enhanced-DnCNN, PICASSO-rec,
-PICASSO-rec-physics, and PICASSO-full-light-adv, with the main decision gate
-being whether PICASSO-rec-physics can reliably beat Enhanced-DnCNN.
+```powershell
+conda run -n picasso python src/picasso_csi/training/run_stage4.py --config configs/stage4_cdl.yaml
+```
 
-Stage 3A-L increases generator/discriminator capacity and runs a longer
-controlled diagnostic for Enhanced-DnCNN, PICASSO-rec, PICASSO-rec-physics,
-PICASSO-full, and PICASSO-cond-full. It may save local checkpoints under
-`checkpoints/`, which are ignored and must not be committed.
-
-Run the Stage 1B smoke evaluation from the repository root:
+Earlier stage runners remain available for traceability:
 
 ```powershell
 conda run -n picasso python src/picasso_csi/training/evaluate_baselines.py --config configs/stage1b_baselines.yaml
-```
-
-Run the Stage 1C PICASSO smoke loop:
-
-```powershell
 conda run -n picasso python src/picasso_csi/training/smoke_train_picasso.py --config configs/stage1c_picasso_smoke.yaml
-```
-
-Run the Stage 2A small formal protocol:
-
-```powershell
 conda run -n picasso python src/picasso_csi/training/run_stage2a_small_formal.py --config configs/stage2a_small_formal.yaml
-```
-
-Run the Stage 2B-2C comprehensive diagnostic protocol:
-
-```powershell
 conda run -n picasso python src/picasso_csi/training/run_stage2bc_comprehensive.py --config configs/stage2bc_comprehensive.yaml
-```
-
-Run the Stage 3A supervised physics-guided protocol:
-
-```powershell
 conda run -n picasso python src/picasso_csi/training/run_stage3a_supervised_physics.py --config configs/stage3a_supervised_physics.yaml
-```
-
-Run the Stage 3A-L larger training protocol:
-
-```powershell
 conda run -n picasso python src/picasso_csi/training/run_stage3a_larger_training.py --config configs/stage3a_larger_training.yaml
+conda run -n picasso python src/picasso_csi/training/run_stage3b_incremental.py --config configs/stage3b_incremental.yaml
 ```
-
-Stage 2B-2C features:
-
-- Condition-aware training with normalized SNR and pilot-ratio channels.
-- Random path count, random delay spread, normalized synthetic channels, and pilot-only AWGN.
-- LS, DnCNN, Cond-DnCNN, Enhanced-DnCNN, and PICASSO loss-mode variants.
-- Reduced-grid fallback when the full grid is estimated to exceed the runtime budget.
-- Lightweight CSV outputs under `outputs/results/*.csv` and Markdown reports under `docs/`.
 
 ## Artifact Policy
 
-- Do not commit raw datasets.
-- Do not commit model checkpoints.
-- Do not commit generated outputs.
-- Stage 2A may commit only compact CSV metrics under `outputs/results/*.csv`.
-- Stage 2B-2C may commit only compact CSV metrics under `outputs/results/*.csv`.
-- Stage 3A may commit only compact CSV metrics under `outputs/results/*.csv`.
-- Stage 3A-L may commit only compact CSV metrics under `outputs/results/*.csv`; local checkpoints remain ignored.
-- Keep only configuration files, source code, documentation, and lightweight survey files.
+Do not commit raw datasets, checkpoints, NumPy/Mat/H5 dumps, prediction tensors, or large generated outputs. Local checkpoints under `checkpoints/` are ignored. The repository commits only source code, configs, documentation, tests, lightweight survey spreadsheets, and compact result CSV/Markdown files under `outputs/results/`.
+
+## Final Recommendation
+
+For paper writing and future extensions, use PICASSO-rec as the main method, Enhanced-DnCNN and LS/LMMSE-style estimators as fairness baselines, and PICASSO-rec-physics as the physics-consistency ablation. Treat full GAN variants as historical/optional ablations unless future realistic data provides stronger evidence for adversarial gains.

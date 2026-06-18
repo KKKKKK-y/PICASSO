@@ -22,8 +22,12 @@ data:
   save_generated_data: false
 
 model:
-  generator: unet_or_resnet_placeholder
-  discriminator: patch_discriminator_placeholder
+  default: PICASSO-rec
+  secondary: PICASSO-rec-physics
+  experimental: PICASSO-full
+  gan_status: optional_deprecated
+  generator: PICASSOGenerator
+  discriminator: PICASSODiscriminator
 
 loss:
   lambda_rec: 1.0
