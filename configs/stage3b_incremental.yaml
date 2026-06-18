@@ -1,0 +1,79 @@
+project:
+  name: PICASSO
+  stage: stage3b_incremental
+
+system:
+  n_tx: 4
+  n_rx: 4
+  n_subcarriers: 64
+  n_paths: 6
+
+channel:
+  random_n_paths: true
+  min_paths: 3
+  max_paths: 10
+  delay_spread: random
+  gain_distribution: complex_gaussian
+  normalize_channel: true
+  pilot_noise_only: true
+
+data:
+  train_samples: 512
+  val_samples: 128
+  test_samples: 256
+  batch_size: 64
+  seeds: [42, 123]
+  pilot_ratios: [0.5, 0.25, 0.125, 0.0625]
+  snr_db_values: [10, 20, 30]
+  save_generated_data: false
+
+training:
+  epochs: 3
+  warmup_epochs: 1
+  device: cuda
+  learning_rate: 0.0001
+  learning_rate_g: 0.0001
+  learning_rate_d: 0.00005
+  max_runtime_hours: 3
+  allow_reduced_grid_if_runtime_high: true
+  gradient_clip_norm: 1.0
+
+models:
+  run_ls: true
+  run_dncnn: true
+  run_enhanced_dncnn: true
+  run_picasso_rec_base: true
+  run_picasso_rec_enhanced: true
+  run_picasso_rec_physics_enhanced: true
+  run_picasso_full_feature: true
+  run_picasso_cond_full_feature: true
+
+model_size:
+  generator_base_channels: 64
+  generator_num_blocks: 6
+  refinement_blocks: 2
+  discriminator_base_channels: 32
+  enhanced_dncnn_base_channels: 64
+  enhanced_dncnn_num_blocks: 8
+
+loss:
+  lambda_rec: 1.0
+  lambda_adv: 0.001
+  lambda_pilot: 1.0
+  lambda_smooth: 0.05
+  lambda_sparse: 0.05
+  lambda_frequency: 0.5
+  lambda_energy: 0.05
+
+outputs:
+  results_dir: outputs/results
+  raw_csv: stage3b_incremental_results.csv
+  ablation_csv: stage3b_ablation.csv
+  analysis_md: docs/stage3b_physics_analysis.md
+
+artifact_policy:
+  save_checkpoints: false
+  save_outputs: false
+  save_numpy_arrays: false
+  save_csv_results: true
+  save_markdown_report: true

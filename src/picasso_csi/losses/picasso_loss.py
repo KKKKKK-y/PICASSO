@@ -8,6 +8,8 @@ import torch.nn.functional as F
 from picasso_csi.losses.gan_losses import generator_bce_loss
 from picasso_csi.losses.physics_losses import (
     delay_sparsity_loss,
+    energy_preservation_loss,
+    frequency_consistency_loss,
     frequency_smoothness_loss,
     pilot_consistency_loss,
 )
@@ -39,6 +41,8 @@ def picasso_generator_loss(
     lambda_pilot: float = 1.0,
     lambda_smooth: float = 0.1,
     lambda_sparse: float = 0.1,
+    lambda_frequency: float = 0.0,
+    lambda_energy: float = 0.0,
     loss_mode: str = "full",
 ) -> dict[str, torch.Tensor]:
     """Return weighted PICASSO generator loss components."""
@@ -53,6 +57,8 @@ def picasso_generator_loss(
         lambda_pilot=lambda_pilot,
         lambda_smooth=lambda_smooth,
         lambda_sparse=lambda_sparse,
+        lambda_frequency=lambda_frequency,
+        lambda_energy=lambda_energy,
     )
     rec_loss = reconstruction_loss(H_hat, H_true, mode="l1")
     if fake_logits is None or weights["adv"] == 0.0:
@@ -66,6 +72,8 @@ def picasso_generator_loss(
     pilot_loss = pilot_consistency_loss(H_hat_physics, H_sparse_physics, mask_physics)
     smooth_loss = frequency_smoothness_loss(H_hat_physics)
     sparse_loss = delay_sparsity_loss(H_hat_physics)
+    frequency_loss = frequency_consistency_loss(H_hat_physics, H_sparse_physics, mask_physics)
+    energy_loss = energy_preservation_loss(H_hat_physics, _to_channel_last(H_true))
 
     total_loss = (
         weights["rec"] * rec_loss
@@ -73,6 +81,8 @@ def picasso_generator_loss(
         + weights["pilot"] * pilot_loss
         + weights["smooth"] * smooth_loss
         + weights["sparse"] * sparse_loss
+        + weights["frequency"] * frequency_loss
+        + weights["energy"] * energy_loss
     )
     return {
         "total": total_loss,
@@ -81,6 +91,8 @@ def picasso_generator_loss(
         "pilot": pilot_loss,
         "smooth": smooth_loss,
         "sparse": sparse_loss,
+        "frequency": frequency_loss,
+        "energy": energy_loss,
     }
 
 
@@ -91,6 +103,8 @@ def _resolve_loss_weights(
     lambda_pilot: float,
     lambda_smooth: float,
     lambda_sparse: float,
+    lambda_frequency: float = 0.0,
+    lambda_energy: float = 0.0,
 ) -> dict[str, float]:
     mode = loss_mode.lower()
     weights = {
@@ -99,13 +113,15 @@ def _resolve_loss_weights(
         "pilot": float(lambda_pilot),
         "smooth": float(lambda_smooth),
         "sparse": float(lambda_sparse),
+        "frequency": float(lambda_frequency),
+        "energy": float(lambda_energy),
     }
     if mode == "rec_only":
-        weights.update({"adv": 0.0, "pilot": 0.0, "smooth": 0.0, "sparse": 0.0})
+        weights.update({"adv": 0.0, "pilot": 0.0, "smooth": 0.0, "sparse": 0.0, "frequency": 0.0, "energy": 0.0})
     elif mode == "rec_physics":
         weights["adv"] = 0.0
     elif mode == "rec_adv":
-        weights.update({"pilot": 0.0, "smooth": 0.0, "sparse": 0.0})
+        weights.update({"pilot": 0.0, "smooth": 0.0, "sparse": 0.0, "frequency": 0.0, "energy": 0.0})
     elif mode == "full":
         pass
     else:

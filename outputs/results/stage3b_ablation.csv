@@ -1,0 +1,6 @@
+question,winner,delta_nmse,interpretation
+architecture,PICASSO-rec-enhanced,-0.00228507,Does structural enhancement improve PICASSO-rec?
+attention,PICASSO-rec-enhanced,0.00130402,Does SE attention help?
+physics,PICASSO-rec-attn,0.00173142,Does enhanced physics help?
+feature_gan,PICASSO-rec-physics-enhanced,0.00133591,Does feature-level GAN help?
+condition,PICASSO-full-feature,0.00456513,Does condition-aware FiLM help?

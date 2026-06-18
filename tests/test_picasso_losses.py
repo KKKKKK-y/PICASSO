@@ -49,7 +49,7 @@ def test_reconstruction_and_picasso_generator_loss() -> None:
     assert isinstance(rec, torch.Tensor)
     assert rec.ndim == 0
     assert torch.isfinite(rec)
-    assert set(losses) == {"total", "rec", "adv", "pilot", "smooth", "sparse"}
+    assert {"total", "rec", "adv", "pilot", "smooth", "sparse"}.issubset(losses)
     for value in losses.values():
         assert isinstance(value, torch.Tensor)
         assert value.ndim == 0
