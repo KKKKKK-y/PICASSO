@@ -72,6 +72,11 @@ multi-seed reduced-grid evaluation, loss ablations, paper-style CSV tables, and
 Markdown analysis. These runs are still small-scale diagnostics, not final paper
 results.
 
+Stage 3A shifts the emphasis to supervised physics-guided reconstruction before
+long full-GAN training. It compares LS, DnCNN, Enhanced-DnCNN, PICASSO-rec,
+PICASSO-rec-physics, and PICASSO-full-light-adv, with the main decision gate
+being whether PICASSO-rec-physics can reliably beat Enhanced-DnCNN.
+
 Run the Stage 1B smoke evaluation from the repository root:
 
 ```powershell
@@ -96,6 +101,12 @@ Run the Stage 2B-2C comprehensive diagnostic protocol:
 conda run -n picasso python src/picasso_csi/training/run_stage2bc_comprehensive.py --config configs/stage2bc_comprehensive.yaml
 ```
 
+Run the Stage 3A supervised physics-guided protocol:
+
+```powershell
+conda run -n picasso python src/picasso_csi/training/run_stage3a_supervised_physics.py --config configs/stage3a_supervised_physics.yaml
+```
+
 Stage 2B-2C features:
 
 - Condition-aware training with normalized SNR and pilot-ratio channels.
@@ -111,4 +122,5 @@ Stage 2B-2C features:
 - Do not commit generated outputs.
 - Stage 2A may commit only compact CSV metrics under `outputs/results/*.csv`.
 - Stage 2B-2C may commit only compact CSV metrics under `outputs/results/*.csv`.
+- Stage 3A may commit only compact CSV metrics under `outputs/results/*.csv`.
 - Keep only configuration files, source code, documentation, and lightweight survey files.

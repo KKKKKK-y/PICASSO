@@ -43,6 +43,29 @@ STAGE2BC_FIELDS = [
     "runtime_seconds",
 ]
 
+STAGE3A_FIELDS = [
+    "stage",
+    "seed",
+    "method",
+    "pilot_ratio",
+    "snr_db",
+    "nmse",
+    "mse",
+    "mae",
+    "pilot_consistency_error",
+    "delay_sparsity_score",
+    "epochs_used",
+    "train_samples",
+    "val_samples",
+    "test_samples",
+    "runtime_seconds",
+    "loss_mode",
+    "lambda_adv",
+    "lambda_pilot",
+    "lambda_smooth",
+    "lambda_sparse",
+]
+
 
 class ResultTable:
     """In-memory result accumulator with small CSV writers."""
@@ -121,6 +144,55 @@ class ResultTable:
             ["method", "overall_nmse", "gap_vs_ls", "gap_vs_dncnn", "gap_vs_enhanced_dncnn"],
         )
 
+    def save_raw_csv_with_fields(self, path: str | Path, fields: list[str]) -> Path:
+        return write_csv(self.rows, path, fields)
+
+    def grouped_summary_by_condition(self) -> list[dict[str, object]]:
+        grouped = _group_rows(self.rows, ("method", "pilot_ratio", "snr_db"))
+        summary = []
+        for (method, pilot_ratio, snr_db), rows in sorted(
+            grouped.items(), key=lambda item: (str(item[0][0]), float(item[0][1]), float(item[0][2]))
+        ):
+            summary.append(
+                {
+                    "method": method,
+                    "pilot_ratio": pilot_ratio,
+                    "snr_db": snr_db,
+                    "nmse_mean": _format_float(mean(_float(row["nmse"]) for row in rows)),
+                    "nmse_std": _format_float(_std([_float(row["nmse"]) for row in rows])),
+                    "mse_mean": _format_float(mean(_float(row["mse"]) for row in rows)),
+                    "mse_std": _format_float(_std([_float(row["mse"]) for row in rows])),
+                    "mae_mean": _format_float(mean(_float(row["mae"]) for row in rows)),
+                    "mae_std": _format_float(_std([_float(row["mae"]) for row in rows])),
+                    "pilot_error_mean": _format_float(mean(_float(row["pilot_consistency_error"]) for row in rows)),
+                    "pilot_error_std": _format_float(
+                        _std([_float(row["pilot_consistency_error"]) for row in rows])
+                    ),
+                    "count": len(rows),
+                }
+            )
+        return summary
+
+    def save_summary_by_condition_csv(self, path: str | Path) -> Path:
+        return write_csv(
+            self.grouped_summary_by_condition(),
+            path,
+            [
+                "method",
+                "pilot_ratio",
+                "snr_db",
+                "nmse_mean",
+                "nmse_std",
+                "mse_mean",
+                "mse_std",
+                "mae_mean",
+                "mae_std",
+                "pilot_error_mean",
+                "pilot_error_std",
+                "count",
+            ],
+        )
+
     def winner(self, predicate=None) -> str:
         rows = [row for row in self.rows if predicate is None or predicate(row)]
         if not rows:
@@ -165,6 +237,7 @@ def _ordered_methods(rows: Iterable[dict[str, object]]) -> list[str]:
         "PICASSO-rec-physics",
         "PICASSO-rec-adv",
         "PICASSO-full",
+        "PICASSO-full-light-adv",
         "PICASSO-cond-full",
     ]
     present = {str(row["method"]) for row in rows}
