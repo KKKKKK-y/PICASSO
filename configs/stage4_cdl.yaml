@@ -1,0 +1,68 @@
+project:
+  name: PICASSO
+  stage: stage4_cdl
+
+system:
+  n_tx: 4
+  n_rx: 4
+  n_subcarriers: 64
+  n_paths: 8
+
+cdl:
+  profiles: [CDL-A, CDL-B, CDL-C]
+  pilot_patterns: [comb, block, irregular]
+  delay_spread_scale: random
+  pilot_contamination_std: 0.005
+
+data:
+  train_samples: 512
+  test_samples: 256
+  batch_size: 64
+  seeds: [42, 123, 2026]
+  pilot_ratios: [0.5, 0.25, 0.125, 0.0625]
+  snr_db_values: [0, 5, 10, 20, 30]
+  velocities_kmh: [0, 30, 60, 120]
+  save_generated_data: false
+
+training:
+  epochs: 3
+  device: cuda
+  learning_rate: 0.0001
+  max_runtime_hours: 5
+  allow_reduced_grid_if_runtime_high: true
+  gradient_clip_norm: 1.0
+
+reduction:
+  seeds: [42]
+  velocities_kmh: [0, 60, 120]
+  snr_db_values: [0, 10, 30]
+
+models:
+  run_ls: true
+  run_lmmse: true
+  run_enhanced_dncnn: true
+  run_picasso_rec: true
+  run_picasso_rec_physics: true
+
+loss:
+  lambda_rec: 1.0
+  lambda_pilot: 1.0
+  lambda_smooth: 0.03
+  lambda_sparse: 0.03
+  lambda_frequency: 0.25
+  lambda_energy: 0.02
+
+outputs:
+  results_dir: outputs/results
+  raw_csv: stage4_raw_results.csv
+  summary_csv: stage4_summary.csv
+  paper_table_csv: stage4_paper_table.csv
+  diagnosis_md: outputs/results/stage4_diagnosis.md
+  report_md: docs/stage4_report.md
+
+artifact_policy:
+  save_checkpoints: false
+  save_outputs: false
+  save_numpy_arrays: false
+  save_csv_results: true
+  save_markdown_report: true

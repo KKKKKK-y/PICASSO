@@ -2,6 +2,7 @@
 
 from picasso_csi.evaluation.metrics import (
     delay_domain_sparsity_score,
+    doppler_robustness_metric,
     mae,
     mse,
     nmse,
@@ -14,6 +15,7 @@ __all__ = [
     "STAGE3A_FIELDS",
     "ResultTable",
     "delay_domain_sparsity_score",
+    "doppler_robustness_metric",
     "mae",
     "mse",
     "nmse",

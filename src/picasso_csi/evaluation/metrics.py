@@ -63,6 +63,26 @@ def delay_domain_sparsity_score(H_hat: torch.Tensor, top_k: int = 6) -> torch.Te
     return torch.mean(top_energy / total_energy)
 
 
+def doppler_robustness_metric(
+    H_hat: torch.Tensor,
+    H_full: torch.Tensor,
+    H_prev: torch.Tensor,
+) -> torch.Tensor:
+    """Return reconstruction error normalized by meaningful channel energy.
+
+    Temporal variation can be exactly zero for static channels, so the metric
+    falls back to the current channel energy in that case.
+    """
+
+    _validate_same_shape(H_hat, H_full)
+    _validate_same_shape(H_full, H_prev)
+    error = torch.sum((H_hat - H_full).pow(2))
+    temporal_variation = torch.sum((H_full - H_prev).pow(2))
+    channel_energy = torch.sum(H_full.pow(2))
+    denominator = torch.maximum(temporal_variation, channel_energy).clamp_min(_eps(H_full))
+    return error / denominator
+
+
 def _validate_same_shape(lhs: torch.Tensor, rhs: torch.Tensor) -> None:
     if not isinstance(lhs, torch.Tensor) or not isinstance(rhs, torch.Tensor):
         raise TypeError("Metrics expect torch.Tensor inputs.")

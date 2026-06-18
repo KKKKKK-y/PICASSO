@@ -31,15 +31,24 @@ def create_pilot_mask(
     _validate_positive("n_rx", n_rx)
     _validate_positive("n_tx", n_tx)
     _validate_positive("n_subcarriers", n_subcarriers)
-    if pattern != "uniform":
-        raise ValueError(f"Unsupported pilot pattern {pattern!r}; expected 'uniform'.")
+    if pattern not in {"uniform", "comb", "block", "irregular"}:
+        raise ValueError(f"Unsupported pilot pattern {pattern!r}.")
     if pilot_ratio not in SUPPORTED_PILOT_RATIOS:
         raise ValueError(
             f"Unsupported pilot_ratio {pilot_ratio!r}; expected one of {SUPPORTED_PILOT_RATIOS}."
         )
 
     step = int(round(1.0 / pilot_ratio))
-    pilot_indices = np.arange(0, n_subcarriers, step)
+    if pattern in {"uniform", "comb"}:
+        pilot_indices = np.arange(0, n_subcarriers, step)
+    elif pattern == "block":
+        n_pilots = max(1, int(round(n_subcarriers * pilot_ratio)))
+        start = max(0, (n_subcarriers - n_pilots) // 2)
+        pilot_indices = np.arange(start, start + n_pilots)
+    else:
+        n_pilots = max(1, int(round(n_subcarriers * pilot_ratio)))
+        rng = np.random.default_rng(12345 + n_rx * 31 + n_tx * 17 + n_subcarriers + int(10000 * pilot_ratio))
+        pilot_indices = np.sort(rng.choice(n_subcarriers, size=n_pilots, replace=False))
     if pilot_indices.size == 0:
         pilot_indices = np.array([0], dtype=np.int64)
 
