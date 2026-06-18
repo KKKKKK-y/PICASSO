@@ -1,0 +1,104 @@
+project:
+  name: PICASSO
+  stage: stage3a_larger_training
+
+system:
+  n_tx: 4
+  n_rx: 4
+  n_subcarriers: 64
+  n_paths: 6
+
+channel:
+  random_n_paths: true
+  min_paths: 3
+  max_paths: 10
+  delay_spread: random
+  gain_distribution: complex_gaussian
+  normalize_channel: true
+  pilot_noise_only: true
+
+data:
+  train_samples: 16384
+  val_samples: 4096
+  test_samples: 4096
+  batch_size: 64
+  seeds: [42, 123, 2026]
+  pilot_ratios: [0.25, 0.125, 0.0625]
+  snr_db_values: [10, 20, 30]
+  save_generated_data: false
+
+training:
+  epochs: 80
+  warmup_epochs: 5
+  device: cuda
+  learning_rate: 0.0001
+  learning_rate_g: 0.0001
+  learning_rate_d: 0.00005
+  early_stop_patience: 12
+  max_runtime_hours: 5
+  allow_reduced_grid_if_runtime_high: true
+  gradient_clip_norm: 1.0
+
+models:
+  run_ls: true
+  run_dncnn: true
+  run_enhanced_dncnn: true
+  run_picasso_rec: true
+  run_picasso_rec_physics: true
+  run_picasso_full: true
+  run_picasso_cond_full: true
+
+model_size:
+  generator_base_channels: 64
+  generator_num_blocks: 6
+  discriminator_base_channels: 64
+  enhanced_dncnn_base_channels: 64
+  enhanced_dncnn_num_blocks: 8
+
+loss:
+  lambda_rec: 1.0
+  lambda_adv: 0.001
+  lambda_pilot: 1.0
+  lambda_smooth: 0.05
+  lambda_sparse: 0.05
+
+gan_schedule:
+  use_warmup: true
+  warmup_loss_mode: rec_physics
+  enable_adv_after_epoch: 5
+  discriminator_steps: 1
+  generator_steps: 1
+
+checkpoint:
+  save_local_checkpoint: true
+  checkpoint_dir: checkpoints/stage3a_larger
+  save_best_only: true
+  commit_checkpoints: false
+
+diagnosis:
+  reduced_grid_seeds: [42, 123]
+  reduced_grid_pilot_ratios: [0.125, 0.0625]
+  reduced_grid_snr_db_values: [10, 20]
+  reduced_train_samples: 1024
+  reduced_val_samples: 256
+  reduced_test_samples: 512
+  reduced_epochs: 10
+  reduced_warmup_epochs: 2
+  reduced_early_stop_patience: 4
+
+outputs:
+  results_dir: outputs/results
+  raw_csv: stage3a_larger_raw_results.csv
+  summary_csv: stage3a_larger_summary.csv
+  paper_table_csv: stage3a_larger_paper_table.csv
+  training_curve_csv: stage3a_larger_training_curves.csv
+  diagnosis_csv: stage3a_larger_diagnosis.csv
+  analysis_md: docs/stage3a_larger_training.md
+
+artifact_policy:
+  save_checkpoints: true
+  commit_checkpoints: false
+  save_outputs: false
+  save_numpy_arrays: false
+  save_csv_results: true
+  save_markdown_report: true

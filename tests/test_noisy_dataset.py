@@ -70,6 +70,7 @@ def test_no_protected_artifacts_are_present_after_dataset_creation() -> None:
         if path.is_file()
         and (path.suffix in protected_extensions or path.name.endswith(".tar.gz"))
         and ".git" not in path.parts
+        and "checkpoints" not in path.parts
     ]
 
     assert protected_files == []

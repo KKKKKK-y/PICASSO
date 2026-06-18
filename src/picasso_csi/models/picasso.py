@@ -1,4 +1,4 @@
-"""PICASSO generator and discriminator skeletons for smoke testing."""
+"""PICASSO generator and discriminator models."""
 
 from __future__ import annotations
 
@@ -9,14 +9,16 @@ from picasso_csi.models.conditioning import make_condition_channels
 
 
 class PICASSOGenerator(nn.Module):
-    """Lightweight residual generator for sparse-pilot CSI reconstruction."""
+    """Residual generator for sparse-pilot CSI reconstruction."""
 
     def __init__(
         self,
         input_channels: int = 2,
         output_channels: int = 2,
-        base_channels: int = 32,
-        num_blocks: int = 3,
+        base_channels: int = 64,
+        num_blocks: int = 6,
+        use_residual_blocks: bool = True,
+        use_skip_connections: bool = True,
         use_condition: bool = False,
     ) -> None:
         super().__init__()
@@ -24,6 +26,7 @@ class PICASSOGenerator(nn.Module):
             raise ValueError("num_blocks must be positive.")
 
         self.use_condition = bool(use_condition)
+        self.use_skip_connections = bool(use_skip_connections)
         if self.use_condition and input_channels == 2:
             input_channels = 4
         layers: list[nn.Module] = [
@@ -31,7 +34,7 @@ class PICASSOGenerator(nn.Module):
             nn.ReLU(inplace=True),
         ]
         for _ in range(num_blocks):
-            layers.append(_ResidualBlock(base_channels))
+            layers.append(_ResidualBlock(base_channels) if use_residual_blocks else _ConvBlock(base_channels))
         layers.append(nn.Conv2d(base_channels, output_channels, kernel_size=3, padding=1))
         self.net = nn.Sequential(*layers)
 
@@ -58,17 +61,17 @@ class PICASSOGenerator(nn.Module):
             model_input = torch.cat([model_input, condition], dim=1)
         residual = self.net(model_input)
         residual = residual.reshape(batch_size, channels, n_rx, n_tx, n_subcarriers)
-        output = H_sparse_b + residual
+        output = H_sparse_b + residual if self.use_skip_connections else residual
         return output if batched else output.squeeze(0)
 
 
 class PICASSODiscriminator(nn.Module):
-    """Small CNN discriminator that emits one real/fake logit per sample."""
+    """Patch-style CNN discriminator that emits one real/fake logit per sample."""
 
     def __init__(
         self,
         input_channels: int = 2,
-        base_channels: int = 32,
+        base_channels: int = 64,
     ) -> None:
         super().__init__()
         self.features = nn.Sequential(
@@ -78,9 +81,13 @@ class PICASSODiscriminator(nn.Module):
             nn.LeakyReLU(0.2, inplace=True),
             nn.Conv2d(base_channels * 2, base_channels * 2, kernel_size=3, padding=1),
             nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(base_channels * 2, base_channels * 4, kernel_size=3, stride=2, padding=1),
+            nn.LeakyReLU(0.2, inplace=True),
+            nn.Conv2d(base_channels * 4, base_channels * 4, kernel_size=3, padding=1),
+            nn.LeakyReLU(0.2, inplace=True),
             nn.AdaptiveAvgPool2d((1, 1)),
         )
-        self.head = nn.Linear(base_channels * 2, 1)
+        self.head = nn.Linear(base_channels * 4, 1)
 
     def forward(self, H: torch.Tensor) -> torch.Tensor:
         batched, H_b = _ensure_batched(H)
@@ -103,6 +110,18 @@ class _ResidualBlock(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.activation(x + self.block(x))
+
+
+class _ConvBlock(nn.Module):
+    def __init__(self, channels: int) -> None:
+        super().__init__()
+        self.block = nn.Sequential(
+            nn.Conv2d(channels, channels, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.block(x)
 
 
 def _ensure_batched(tensor: torch.Tensor) -> tuple[bool, torch.Tensor]:

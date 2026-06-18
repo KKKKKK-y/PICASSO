@@ -77,6 +77,11 @@ long full-GAN training. It compares LS, DnCNN, Enhanced-DnCNN, PICASSO-rec,
 PICASSO-rec-physics, and PICASSO-full-light-adv, with the main decision gate
 being whether PICASSO-rec-physics can reliably beat Enhanced-DnCNN.
 
+Stage 3A-L increases generator/discriminator capacity and runs a longer
+controlled diagnostic for Enhanced-DnCNN, PICASSO-rec, PICASSO-rec-physics,
+PICASSO-full, and PICASSO-cond-full. It may save local checkpoints under
+`checkpoints/`, which are ignored and must not be committed.
+
 Run the Stage 1B smoke evaluation from the repository root:
 
 ```powershell
@@ -107,6 +112,12 @@ Run the Stage 3A supervised physics-guided protocol:
 conda run -n picasso python src/picasso_csi/training/run_stage3a_supervised_physics.py --config configs/stage3a_supervised_physics.yaml
 ```
 
+Run the Stage 3A-L larger training protocol:
+
+```powershell
+conda run -n picasso python src/picasso_csi/training/run_stage3a_larger_training.py --config configs/stage3a_larger_training.yaml
+```
+
 Stage 2B-2C features:
 
 - Condition-aware training with normalized SNR and pilot-ratio channels.
@@ -123,4 +134,5 @@ Stage 2B-2C features:
 - Stage 2A may commit only compact CSV metrics under `outputs/results/*.csv`.
 - Stage 2B-2C may commit only compact CSV metrics under `outputs/results/*.csv`.
 - Stage 3A may commit only compact CSV metrics under `outputs/results/*.csv`.
+- Stage 3A-L may commit only compact CSV metrics under `outputs/results/*.csv`; local checkpoints remain ignored.
 - Keep only configuration files, source code, documentation, and lightweight survey files.
