@@ -1,0 +1,8 @@
+Group,Variant,Avg NMSE,Std NMSE,Delta vs PICASSO-rec-base,Interpretation,Keep in Final Model?
+baseline,LS,0.88709148,0.00047117,0.04197182,negative contribution under the matched Stage 5B setting,no
+baseline,Enhanced-DnCNN,0.84845396,0.01503404,0.00333429,negative contribution under the matched Stage 5B setting,no
+baseline,PICASSO-rec-base,0.84511966,0.01894520,0.00000000,neutral contribution under the matched Stage 5B setting,yes
+architecture,PICASSO-rec + refinement + multi-scale + SE,0.84263315,0.02121661,-0.00248651,positive contribution under the matched Stage 5B setting,yes
+loss,PICASSO-rec-full physics,0.84492910,0.01721885,-0.00019056,neutral contribution under the matched Stage 5B setting,no
+gan,PICASSO-rec + light adversarial loss,0.84586543,0.01893124,0.00074577,neutral contribution under the matched Stage 5B setting,no
+architecture,PICASSO-rec-enhanced full architecture,0.84516710,0.01818932,0.00004744,neutral contribution under the matched Stage 5B setting,no

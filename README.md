@@ -6,9 +6,11 @@ PICASSO-CSI is a lightweight research codebase for sparse-pilot CSI reconstructi
 
 ## Final Release Status
 
-Stages 0-4 are complete and traceable. Stage 5A organizes their evidence into a paper-level ablation study and adds only reduced component-isolation runs. The final default model is **PICASSO-rec**, a supervised residual reconstruction model. **PICASSO-rec-physics** is kept as the secondary physics-guided variant. **PICASSO-full / condition-aware full / GAN variants** are retained only as experimental ablations because adversarial training did not provide stable or consistent gains in the completed diagnostics.
+Stages 0-4 are complete and traceable. Stage 5A organizes their evidence into a paper-level ablation study and adds only reduced component-isolation runs. Stage 5B adds a strict matched-condition CDL ablation in which every variant shares the same data protocol, optimizer, batch size, epochs, and evaluator. The final default model is **PICASSO-rec**, a supervised residual reconstruction model. **PICASSO-rec-physics** is kept as the secondary physics-guided variant. **PICASSO-full / condition-aware full / GAN variants** are retained only as experimental ablations because adversarial training did not provide stable or consistent gains in the completed diagnostics.
 
 The final evidence supports supervised PICASSO reconstruction as the primary path. Physics constraints are useful for analysis and consistency checks, but their measured gain is limited after Stage 3B/4. GAN training is deprecated as a primary direction for this release.
+
+The strict Stage 5B controlled study keeps **PICASSO-rec** as the final model family. Under its fixed CDL setting, refinement + multi-scale + SE is the best structural configuration, while the full bundle including FiLM is neutral. Physics variants remain neutral/secondary, and output/feature GAN variants remain negative; light adversarial training does not provide a positive NMSE contribution.
 
 ## Repository Structure
 
@@ -37,6 +39,7 @@ The final evidence supports supervised PICASSO reconstruction as the primary pat
 - **Stage 3B:** incremental structural enhancement and physics-loss ablation.
 - **Stage 4:** CDL-inspired realistic wireless generalization with CDL-A/B/C, pilot pattern variation, pilot contamination, and mobility/Doppler diagnostics.
 - **Stage 5A:** provenance-aware paper-level model, architecture, loss, GAN, channel-complexity, and robustness ablations with minimal gap-only runs.
+- **Stage 5B:** new controlled CDL-A/B/C ablations at fixed pilot ratio, SNR, mobility, pilot pattern, seeds, and 30-epoch training budget.
 
 ## Recommended Usage
 
@@ -56,6 +59,12 @@ Build the Stage 5A paper-level ablation tables. This reuses existing CSVs first 
 
 ```powershell
 conda run -n picasso python src/picasso_csi/training/run_stage5a_ablation.py --config configs/stage5a_ablation.yaml
+```
+
+Run the strict Stage 5B controlled ablation:
+
+```powershell
+conda run -n picasso python src/picasso_csi/training/run_stage5b_controlled_ablation.py --config configs/stage5b_controlled_ablation.yaml
 ```
 
 Earlier stage runners remain available for traceability:

@@ -1,0 +1,78 @@
+project:
+  name: PICASSO
+  stage: stage5b_controlled_ablation
+
+experiment:
+  controlled: true
+  channel_profiles: [CDL-A, CDL-B, CDL-C]
+  pilot_ratio: 0.125
+  snr_db: 10
+  velocity: 60
+  pilot_pattern: comb
+  seeds: [42, 123, 2026]
+
+system:
+  n_tx: 4
+  n_rx: 4
+  n_subcarriers: 64
+
+cdl:
+  delay_spread_scale: random
+  pilot_contamination_std: 0.005
+
+data:
+  train_samples: 512
+  test_samples: 256
+  save_generated_data: false
+
+training:
+  epochs: 30
+  batch_size: 64
+  optimizer: adam
+  learning_rate: 0.0001
+  discriminator_learning_rate: 0.00005
+  gan_warmup_epochs: 2
+  gradient_clip_norm: 1.0
+  device: cuda
+  same_training_budget_for_all_variants: true
+
+model:
+  generator_base_channels: 64
+  generator_num_blocks: 6
+  refinement_blocks: 2
+  discriminator_base_channels: 32
+  enhanced_dncnn_hidden_channels: 64
+  enhanced_dncnn_depth: 8
+
+loss:
+  lambda_rec: 1.0
+  lambda_pilot: 1.0
+  lambda_smooth: 0.03
+  lambda_sparse: 0.03
+  lambda_frequency: 0.25
+  lambda_energy: 0.02
+  lambda_adv_full: 0.01
+  lambda_adv_light: 0.001
+
+ablation:
+  run_baseline_comparison: true
+  run_architecture_ablation: true
+  run_loss_ablation: true
+  run_gan_ablation: true
+
+artifact_policy:
+  save_checkpoints: false
+  save_numpy_arrays: false
+  save_predictions: false
+  save_generated_data: false
+  save_csv_results: true
+  save_markdown_report: true
+
+outputs:
+  results_dir: outputs/results
+  baseline_csv: stage5b_baseline_comparison.csv
+  architecture_csv: stage5b_architecture_ablation.csv
+  loss_csv: stage5b_loss_ablation.csv
+  gan_csv: stage5b_gan_ablation.csv
+  final_table_csv: stage5b_controlled_ablation_table.csv
+  report_md: docs/stage5b_controlled_ablation_report.md
