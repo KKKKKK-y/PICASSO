@@ -1,0 +1,109 @@
+ablation_type,condition,method,pilot_ratio,snr_db,velocity,channel_profile,pilot_pattern,nmse,mse,mae,doppler_robustness,runtime_seconds,source_stage,reused_or_new
+gan,pilot=0.5000; snr=10,no GAN (Stage 3B),0.5000,10,0,synthetic,comb,0.52430944,0.26215472,0.36364230,,0.5420,stage3b,reused
+gan,pilot=0.5000; snr=10,feature-level GAN (Stage 3B),0.5000,10,0,synthetic,comb,0.52389917,0.26194958,0.36196005,,0.9184,stage3b,reused
+gan,pilot=0.5000; snr=10,conditioned feature-level GAN (Stage 3B),0.5000,10,0,synthetic,comb,0.51682836,0.25841418,0.35945204,,0.8893,stage3b,reused
+gan,pilot=0.5000; snr=20,no GAN (Stage 3B),0.5000,20,0,synthetic,comb,0.47985149,0.23992575,0.30790041,,0.4632,stage3b,reused
+gan,pilot=0.5000; snr=20,feature-level GAN (Stage 3B),0.5000,20,0,synthetic,comb,0.48277639,0.24138819,0.30587335,,0.8761,stage3b,reused
+gan,pilot=0.5000; snr=20,conditioned feature-level GAN (Stage 3B),0.5000,20,0,synthetic,comb,0.48645043,0.24322521,0.30716351,,0.8776,stage3b,reused
+gan,pilot=0.5000; snr=30,no GAN (Stage 3B),0.5000,30,0,synthetic,comb,0.47822630,0.23911315,0.29365765,,0.4439,stage3b,reused
+gan,pilot=0.5000; snr=30,feature-level GAN (Stage 3B),0.5000,30,0,synthetic,comb,0.49029916,0.24514958,0.29238403,,0.8587,stage3b,reused
+gan,pilot=0.5000; snr=30,conditioned feature-level GAN (Stage 3B),0.5000,30,0,synthetic,comb,0.48811971,0.24405986,0.29107763,,0.8735,stage3b,reused
+gan,pilot=0.2500; snr=10,no GAN (Stage 3B),0.2500,10,0,synthetic,comb,0.75323461,0.37661730,0.46106570,,0.4430,stage3b,reused
+gan,pilot=0.2500; snr=10,feature-level GAN (Stage 3B),0.2500,10,0,synthetic,comb,0.75382771,0.37691385,0.46111093,,0.8591,stage3b,reused
+gan,pilot=0.2500; snr=10,conditioned feature-level GAN (Stage 3B),0.2500,10,0,synthetic,comb,0.76442386,0.38221193,0.46444410,,0.8767,stage3b,reused
+gan,pilot=0.2500; snr=20,no GAN (Stage 3B),0.2500,20,0,synthetic,comb,0.74170670,0.37085335,0.43626539,,0.4440,stage3b,reused
+gan,pilot=0.2500; snr=20,feature-level GAN (Stage 3B),0.2500,20,0,synthetic,comb,0.73174533,0.36587267,0.43209155,,0.8599,stage3b,reused
+gan,pilot=0.2500; snr=20,conditioned feature-level GAN (Stage 3B),0.2500,20,0,synthetic,comb,0.74233107,0.37116554,0.43537301,,0.8755,stage3b,reused
+gan,pilot=0.2500; snr=30,no GAN (Stage 3B),0.2500,30,0,synthetic,comb,0.73512588,0.36756294,0.42648946,,0.4430,stage3b,reused
+gan,pilot=0.2500; snr=30,feature-level GAN (Stage 3B),0.2500,30,0,synthetic,comb,0.74071154,0.37035577,0.42634045,,0.8581,stage3b,reused
+gan,pilot=0.2500; snr=30,conditioned feature-level GAN (Stage 3B),0.2500,30,0,synthetic,comb,0.74453428,0.37226714,0.42740346,,0.8964,stage3b,reused
+gan,pilot=0.1250; snr=10,no GAN (Stage 3B),0.1250,10,0,synthetic,comb,0.87485223,0.43742611,0.51273759,,0.4453,stage3b,reused
+gan,pilot=0.1250; snr=10,feature-level GAN (Stage 3B),0.1250,10,0,synthetic,comb,0.87817687,0.43908843,0.51374893,,0.8589,stage3b,reused
+gan,pilot=0.1250; snr=10,conditioned feature-level GAN (Stage 3B),0.1250,10,0,synthetic,comb,0.88454495,0.44227248,0.51579522,,0.8748,stage3b,reused
+gan,pilot=0.1250; snr=20,no GAN (Stage 3B),0.1250,20,0,synthetic,comb,0.87038919,0.43519460,0.50059934,,0.4456,stage3b,reused
+gan,pilot=0.1250; snr=20,feature-level GAN (Stage 3B),0.1250,20,0,synthetic,comb,0.87342517,0.43671259,0.50115827,,0.8569,stage3b,reused
+gan,pilot=0.1250; snr=20,conditioned feature-level GAN (Stage 3B),0.1250,20,0,synthetic,comb,0.87348819,0.43674409,0.50115041,,0.8792,stage3b,reused
+gan,pilot=0.1250; snr=30,no GAN (Stage 3B),0.1250,30,0,synthetic,comb,0.86738470,0.43369235,0.49553554,,0.4430,stage3b,reused
+gan,pilot=0.1250; snr=30,feature-level GAN (Stage 3B),0.1250,30,0,synthetic,comb,0.86952963,0.43476482,0.49573229,,0.8510,stage3b,reused
+gan,pilot=0.1250; snr=30,conditioned feature-level GAN (Stage 3B),0.1250,30,0,synthetic,comb,0.87200382,0.43600191,0.49670215,,0.8816,stage3b,reused
+gan,pilot=0.0625; snr=10,no GAN (Stage 3B),0.0625,10,0,synthetic,comb,0.94211984,0.47105992,0.54045892,,0.4443,stage3b,reused
+gan,pilot=0.0625; snr=10,feature-level GAN (Stage 3B),0.0625,10,0,synthetic,comb,0.93899222,0.46949611,0.53937744,,0.8606,stage3b,reused
+gan,pilot=0.0625; snr=10,conditioned feature-level GAN (Stage 3B),0.0625,10,0,synthetic,comb,0.94169362,0.47084681,0.54022154,,0.8730,stage3b,reused
+gan,pilot=0.0625; snr=20,no GAN (Stage 3B),0.0625,20,0,synthetic,comb,0.93478698,0.46739349,0.53271465,,0.4450,stage3b,reused
+gan,pilot=0.0625; snr=20,feature-level GAN (Stage 3B),0.0625,20,0,synthetic,comb,0.93629830,0.46814915,0.53303580,,0.8621,stage3b,reused
+gan,pilot=0.0625; snr=20,conditioned feature-level GAN (Stage 3B),0.0625,20,0,synthetic,comb,0.93733491,0.46866746,0.53333902,,0.8827,stage3b,reused
+gan,pilot=0.0625; snr=30,no GAN (Stage 3B),0.0625,30,0,synthetic,comb,0.93620361,0.46810181,0.53165255,,0.4450,stage3b,reused
+gan,pilot=0.0625; snr=30,feature-level GAN (Stage 3B),0.0625,30,0,synthetic,comb,0.93570891,0.46785446,0.53068185,,0.8555,stage3b,reused
+gan,pilot=0.0625; snr=30,conditioned feature-level GAN (Stage 3B),0.0625,30,0,synthetic,comb,0.93774021,0.46887010,0.53134573,,0.8907,stage3b,reused
+gan,pilot=0.5000; snr=10,no GAN (Stage 3B),0.5000,10,0,synthetic,comb,0.50610133,0.25305067,0.35796625,,0.4461,stage3b,reused
+gan,pilot=0.5000; snr=10,feature-level GAN (Stage 3B),0.5000,10,0,synthetic,comb,0.52412604,0.26206302,0.36252114,,0.8628,stage3b,reused
+gan,pilot=0.5000; snr=10,conditioned feature-level GAN (Stage 3B),0.5000,10,0,synthetic,comb,0.53339049,0.26669525,0.36619348,,0.8889,stage3b,reused
+gan,pilot=0.5000; snr=20,no GAN (Stage 3B),0.5000,20,0,synthetic,comb,0.47106065,0.23553032,0.30500276,,0.4538,stage3b,reused
+gan,pilot=0.5000; snr=20,feature-level GAN (Stage 3B),0.5000,20,0,synthetic,comb,0.47535931,0.23767965,0.30416606,,0.8517,stage3b,reused
+gan,pilot=0.5000; snr=20,conditioned feature-level GAN (Stage 3B),0.5000,20,0,synthetic,comb,0.48702645,0.24351322,0.30739580,,0.8820,stage3b,reused
+gan,pilot=0.5000; snr=30,no GAN (Stage 3B),0.5000,30,0,synthetic,comb,0.47414044,0.23707022,0.29550235,,0.4471,stage3b,reused
+gan,pilot=0.5000; snr=30,feature-level GAN (Stage 3B),0.5000,30,0,synthetic,comb,0.47958385,0.23979193,0.28960551,,0.8632,stage3b,reused
+gan,pilot=0.5000; snr=30,conditioned feature-level GAN (Stage 3B),0.5000,30,0,synthetic,comb,0.48573683,0.24286842,0.29036351,,0.8815,stage3b,reused
+gan,pilot=0.2500; snr=10,no GAN (Stage 3B),0.2500,10,0,synthetic,comb,0.75704667,0.37852333,0.46283150,,0.4435,stage3b,reused
+gan,pilot=0.2500; snr=10,feature-level GAN (Stage 3B),0.2500,10,0,synthetic,comb,0.74785009,0.37392505,0.45954069,,0.8568,stage3b,reused
+gan,pilot=0.2500; snr=10,conditioned feature-level GAN (Stage 3B),0.2500,10,0,synthetic,comb,0.75645737,0.37822869,0.46219537,,0.8827,stage3b,reused
+gan,pilot=0.2500; snr=20,no GAN (Stage 3B),0.2500,20,0,synthetic,comb,0.71907313,0.35953657,0.42885858,,0.4408,stage3b,reused
+gan,pilot=0.2500; snr=20,feature-level GAN (Stage 3B),0.2500,20,0,synthetic,comb,0.72872290,0.36436145,0.43152452,,0.8609,stage3b,reused
+gan,pilot=0.2500; snr=20,conditioned feature-level GAN (Stage 3B),0.2500,20,0,synthetic,comb,0.74804470,0.37402235,0.43771149,,0.8747,stage3b,reused
+gan,pilot=0.2500; snr=30,no GAN (Stage 3B),0.2500,30,0,synthetic,comb,0.73543195,0.36771598,0.42742714,,0.4457,stage3b,reused
+gan,pilot=0.2500; snr=30,feature-level GAN (Stage 3B),0.2500,30,0,synthetic,comb,0.74187441,0.37093721,0.42737606,,0.8598,stage3b,reused
+gan,pilot=0.2500; snr=30,conditioned feature-level GAN (Stage 3B),0.2500,30,0,synthetic,comb,0.74355103,0.37177552,0.42780849,,0.8820,stage3b,reused
+gan,pilot=0.1250; snr=10,no GAN (Stage 3B),0.1250,10,0,synthetic,comb,0.87957130,0.43978565,0.51457861,,0.4423,stage3b,reused
+gan,pilot=0.1250; snr=10,feature-level GAN (Stage 3B),0.1250,10,0,synthetic,comb,0.87628643,0.43814322,0.51340847,,0.8528,stage3b,reused
+gan,pilot=0.1250; snr=10,conditioned feature-level GAN (Stage 3B),0.1250,10,0,synthetic,comb,0.88273588,0.44136794,0.51541224,,0.8738,stage3b,reused
+gan,pilot=0.1250; snr=20,no GAN (Stage 3B),0.1250,20,0,synthetic,comb,0.86917606,0.43458803,0.50051174,,0.4433,stage3b,reused
+gan,pilot=0.1250; snr=20,feature-level GAN (Stage 3B),0.1250,20,0,synthetic,comb,0.86740668,0.43370334,0.49958082,,0.8582,stage3b,reused
+gan,pilot=0.1250; snr=20,conditioned feature-level GAN (Stage 3B),0.1250,20,0,synthetic,comb,0.87229364,0.43614682,0.50090609,,0.8861,stage3b,reused
+gan,pilot=0.1250; snr=30,no GAN (Stage 3B),0.1250,30,0,synthetic,comb,0.86618882,0.43309441,0.49540215,,0.4416,stage3b,reused
+gan,pilot=0.1250; snr=30,feature-level GAN (Stage 3B),0.1250,30,0,synthetic,comb,0.86939807,0.43469904,0.49600997,,0.8588,stage3b,reused
+gan,pilot=0.1250; snr=30,conditioned feature-level GAN (Stage 3B),0.1250,30,0,synthetic,comb,0.87293673,0.43646836,0.49686915,,0.8758,stage3b,reused
+gan,pilot=0.0625; snr=10,no GAN (Stage 3B),0.0625,10,0,synthetic,comb,0.94075546,0.47037773,0.54027307,,0.4459,stage3b,reused
+gan,pilot=0.0625; snr=10,feature-level GAN (Stage 3B),0.0625,10,0,synthetic,comb,0.93915966,0.46957983,0.53975035,,0.8583,stage3b,reused
+gan,pilot=0.0625; snr=10,conditioned feature-level GAN (Stage 3B),0.0625,10,0,synthetic,comb,0.94213574,0.47106787,0.54066020,,0.8827,stage3b,reused
+gan,pilot=0.0625; snr=20,no GAN (Stage 3B),0.0625,20,0,synthetic,comb,0.93720211,0.46860106,0.53380945,,0.4459,stage3b,reused
+gan,pilot=0.0625; snr=20,feature-level GAN (Stage 3B),0.0625,20,0,synthetic,comb,0.93624094,0.46812047,0.53328690,,0.8536,stage3b,reused
+gan,pilot=0.0625; snr=20,conditioned feature-level GAN (Stage 3B),0.0625,20,0,synthetic,comb,0.93648754,0.46824377,0.53325225,,0.8754,stage3b,reused
+gan,pilot=0.0625; snr=30,no GAN (Stage 3B),0.0625,30,0,synthetic,comb,0.93402056,0.46701028,0.53087778,,0.4466,stage3b,reused
+gan,pilot=0.0625; snr=30,feature-level GAN (Stage 3B),0.0625,30,0,synthetic,comb,0.93663146,0.46831573,0.53128041,,0.8537,stage3b,reused
+gan,pilot=0.0625; snr=30,conditioned feature-level GAN (Stage 3B),0.0625,30,0,synthetic,comb,0.93730359,0.46865179,0.53151514,,0.8727,stage3b,reused
+gan,pilot=0.2500; snr=10,no GAN (Stage 2BC),0.2500,10,0,synthetic,comb,0.76216108,0.38108054,0.46418333,,0.3157,stage2bc,reused
+gan,pilot=0.2500; snr=10,light adversarial loss (Stage 2BC),0.2500,10,0,synthetic,comb,0.76372735,0.38186368,0.46470723,,0.3585,stage2bc,reused
+gan,pilot=0.2500; snr=10,output-level GAN (Stage 2BC),0.2500,10,0,synthetic,comb,0.75612095,0.37806047,0.46192820,,0.4809,stage2bc,reused
+gan,pilot=0.2500; snr=20,no GAN (Stage 2BC),0.2500,20,0,synthetic,comb,0.76030709,0.38015354,0.44384971,,0.2155,stage2bc,reused
+gan,pilot=0.2500; snr=20,light adversarial loss (Stage 2BC),0.2500,20,0,synthetic,comb,0.75006498,0.37503249,0.43884890,,0.3311,stage2bc,reused
+gan,pilot=0.2500; snr=20,output-level GAN (Stage 2BC),0.2500,20,0,synthetic,comb,0.73790419,0.36895210,0.43491181,,0.4841,stage2bc,reused
+gan,pilot=0.1250; snr=10,no GAN (Stage 2BC),0.1250,10,0,synthetic,comb,0.88028525,0.44014262,0.51458202,,0.2187,stage2bc,reused
+gan,pilot=0.1250; snr=10,light adversarial loss (Stage 2BC),0.1250,10,0,synthetic,comb,0.87975951,0.43987975,0.51433337,,0.3299,stage2bc,reused
+gan,pilot=0.1250; snr=10,output-level GAN (Stage 2BC),0.1250,10,0,synthetic,comb,0.87910414,0.43955207,0.51405454,,0.4783,stage2bc,reused
+gan,pilot=0.1250; snr=20,no GAN (Stage 2BC),0.1250,20,0,synthetic,comb,0.87456621,0.43728311,0.50221226,,0.2150,stage2bc,reused
+gan,pilot=0.1250; snr=20,light adversarial loss (Stage 2BC),0.1250,20,0,synthetic,comb,0.87489146,0.43744573,0.50220910,,0.3332,stage2bc,reused
+gan,pilot=0.1250; snr=20,output-level GAN (Stage 2BC),0.1250,20,0,synthetic,comb,0.86592296,0.43296148,0.49913019,,0.4816,stage2bc,reused
+gan,pilot=0.0625; snr=10,no GAN (Stage 2BC),0.0625,10,0,synthetic,comb,0.94201377,0.47100689,0.54057059,,0.2143,stage2bc,reused
+gan,pilot=0.0625; snr=10,light adversarial loss (Stage 2BC),0.0625,10,0,synthetic,comb,0.94341864,0.47170932,0.54090172,,0.3324,stage2bc,reused
+gan,pilot=0.0625; snr=10,output-level GAN (Stage 2BC),0.0625,10,0,synthetic,comb,0.94325303,0.47162651,0.54076877,,0.4790,stage2bc,reused
+gan,pilot=0.0625; snr=20,no GAN (Stage 2BC),0.0625,20,0,synthetic,comb,0.93945402,0.46972701,0.53466018,,0.2152,stage2bc,reused
+gan,pilot=0.0625; snr=20,light adversarial loss (Stage 2BC),0.0625,20,0,synthetic,comb,0.93797822,0.46898911,0.53418253,,0.3324,stage2bc,reused
+gan,pilot=0.0625; snr=20,output-level GAN (Stage 2BC),0.0625,20,0,synthetic,comb,0.93812631,0.46906316,0.53381176,,0.4734,stage2bc,reused
+gan,pilot=0.2500; snr=10,no GAN (Stage 2BC),0.2500,10,0,synthetic,comb,0.76388255,0.38194127,0.46509448,,0.2149,stage2bc,reused
+gan,pilot=0.2500; snr=10,light adversarial loss (Stage 2BC),0.2500,10,0,synthetic,comb,0.75615612,0.37807806,0.46246832,,0.3289,stage2bc,reused
+gan,pilot=0.2500; snr=10,output-level GAN (Stage 2BC),0.2500,10,0,synthetic,comb,0.75823915,0.37911958,0.46293629,,0.4749,stage2bc,reused
+gan,pilot=0.2500; snr=20,no GAN (Stage 2BC),0.2500,20,0,synthetic,comb,0.73768012,0.36884006,0.43512716,,0.2155,stage2bc,reused
+gan,pilot=0.2500; snr=20,light adversarial loss (Stage 2BC),0.2500,20,0,synthetic,comb,0.74588153,0.37294076,0.43850051,,0.3271,stage2bc,reused
+gan,pilot=0.2500; snr=20,output-level GAN (Stage 2BC),0.2500,20,0,synthetic,comb,0.74194093,0.37097047,0.43686260,,0.4839,stage2bc,reused
+gan,pilot=0.1250; snr=10,no GAN (Stage 2BC),0.1250,10,0,synthetic,comb,0.88369009,0.44184504,0.51604509,,0.2174,stage2bc,reused
+gan,pilot=0.1250; snr=10,light adversarial loss (Stage 2BC),0.1250,10,0,synthetic,comb,0.87863335,0.43931668,0.51420760,,0.3292,stage2bc,reused
+gan,pilot=0.1250; snr=10,output-level GAN (Stage 2BC),0.1250,10,0,synthetic,comb,0.88014314,0.44007157,0.51467304,,0.4855,stage2bc,reused
+gan,pilot=0.1250; snr=20,no GAN (Stage 2BC),0.1250,20,0,synthetic,comb,0.86813045,0.43406522,0.50028996,,0.2153,stage2bc,reused
+gan,pilot=0.1250; snr=20,light adversarial loss (Stage 2BC),0.1250,20,0,synthetic,comb,0.87538499,0.43769249,0.50269946,,0.3303,stage2bc,reused
+gan,pilot=0.1250; snr=20,output-level GAN (Stage 2BC),0.1250,20,0,synthetic,comb,0.87271017,0.43635508,0.50164683,,0.4771,stage2bc,reused
+gan,pilot=0.0625; snr=10,no GAN (Stage 2BC),0.0625,10,0,synthetic,comb,0.94350922,0.47175461,0.54124312,,0.2145,stage2bc,reused
+gan,pilot=0.0625; snr=10,light adversarial loss (Stage 2BC),0.0625,10,0,synthetic,comb,0.94546461,0.47273231,0.54197834,,0.3307,stage2bc,reused
+gan,pilot=0.0625; snr=10,output-level GAN (Stage 2BC),0.0625,10,0,synthetic,comb,0.94084689,0.47042345,0.54040444,,0.4800,stage2bc,reused
+gan,pilot=0.0625; snr=20,no GAN (Stage 2BC),0.0625,20,0,synthetic,comb,0.93486609,0.46743304,0.53309442,,0.2142,stage2bc,reused
+gan,pilot=0.0625; snr=20,light adversarial loss (Stage 2BC),0.0625,20,0,synthetic,comb,0.93956016,0.46978008,0.53489670,,0.3343,stage2bc,reused
+gan,pilot=0.0625; snr=20,output-level GAN (Stage 2BC),0.0625,20,0,synthetic,comb,0.93831645,0.46915822,0.53412253,,0.4790,stage2bc,reused

@@ -1,0 +1,88 @@
+project:
+  name: PICASSO
+  stage: stage5a_paper_level_ablation
+
+data:
+  use_existing_results_first: true
+  run_missing_experiments: true
+  save_generated_data: false
+  seeds: [42, 123]
+  pilot_ratios: [0.5, 0.25, 0.125, 0.0625]
+  snr_db_values: [0, 10, 30]
+  velocities: [0, 60, 120]
+  cdl_profiles: [CDL-A, CDL-B, CDL-C]
+  pilot_patterns: [comb, block, irregular]
+
+supplemental:
+  train_samples: 256
+  test_samples: 128
+  batch_size: 64
+  epochs: 2
+  pilot_ratio: 0.125
+  snr_db: 10
+
+system:
+  n_tx: 4
+  n_rx: 4
+  n_subcarriers: 64
+  n_paths: 6
+
+channel:
+  random_n_paths: true
+  min_paths: 3
+  max_paths: 10
+  delay_spread: random
+  gain_distribution: complex_gaussian
+  normalize_channel: true
+  pilot_noise_only: true
+
+model_size:
+  generator_base_channels: 64
+  generator_num_blocks: 6
+  refinement_blocks: 2
+  discriminator_base_channels: 32
+
+loss:
+  lambda_rec: 1.0
+  lambda_adv: 0.001
+  lambda_pilot: 1.0
+  lambda_smooth: 0.05
+  lambda_sparse: 0.05
+  lambda_frequency: 0.5
+  lambda_energy: 0.05
+
+ablation:
+  run_model_ablation: true
+  run_architecture_ablation: true
+  run_loss_ablation: true
+  run_gan_ablation: true
+  run_channel_complexity_ablation: true
+  run_robustness_ablation: true
+
+runtime:
+  device: cuda
+  max_runtime_hours: 5
+  allow_reduced_grid_if_runtime_high: true
+  prefer_existing_csv_results: true
+  learning_rate_g: 0.0001
+  learning_rate_d: 0.00005
+  warmup_epochs: 1
+  gradient_clip_norm: 1.0
+
+artifact_policy:
+  save_checkpoints: false
+  save_outputs: false
+  save_numpy_arrays: false
+  save_csv_results: true
+  save_markdown_report: true
+
+outputs:
+  results_dir: outputs/results
+  model_ablation_csv: stage5a_model_ablation.csv
+  architecture_ablation_csv: stage5a_architecture_ablation.csv
+  loss_ablation_csv: stage5a_loss_ablation.csv
+  gan_ablation_csv: stage5a_gan_ablation.csv
+  channel_ablation_csv: stage5a_channel_ablation.csv
+  robustness_ablation_csv: stage5a_robustness_ablation.csv
+  final_ablation_table_csv: stage5a_final_ablation_table.csv
+  report_md: docs/stage5a_ablation_report.md

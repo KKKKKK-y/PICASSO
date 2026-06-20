@@ -1,0 +1,38 @@
+Ablation Factor,Variant,NMSE,Relative Change,Interpretation,Keep in Final Model?
+model,PICASSO-rec,0.89559736,+0.00%,PICASSO-rec matches mean NMSE versus the category reference (+0.00%); retain provenance when interpreting.,yes
+model,PICASSO-rec-physics,0.89635902,+0.09%,PICASSO-rec-physics degrades mean NMSE versus the category reference (+0.09%); retain provenance when interpreting.,no
+model,PICASSO-cond-full,0.89640709,+0.09%,PICASSO-cond-full degrades mean NMSE versus the category reference (+0.09%); retain provenance when interpreting.,no
+model,PICASSO-full,0.89647962,+0.10%,PICASSO-full degrades mean NMSE versus the category reference (+0.10%); retain provenance when interpreting.,no
+model,Enhanced-DnCNN,0.89761454,+0.23%,Enhanced-DnCNN degrades mean NMSE versus the category reference (+0.23%); retain provenance when interpreting.,no
+model,DnCNN,0.89841003,+0.31%,DnCNN degrades mean NMSE versus the category reference (+0.31%); retain provenance when interpreting.,no
+model,LS,0.91119584,+1.74%,LS degrades mean NMSE versus the category reference (+1.74%); retain provenance when interpreting.,no
+architecture,PICASSO-rec-attn,0.88508414,-0.41%,PICASSO-rec-attn improves mean NMSE versus the category reference (-0.41%); retain provenance when interpreting.,no
+architecture,PICASSO-rec-SE,0.88595106,-0.31%,PICASSO-rec-SE improves mean NMSE versus the category reference (-0.31%); retain provenance when interpreting.,no
+architecture,PICASSO-rec-multiscale,0.88760105,-0.13%,PICASSO-rec-multiscale improves mean NMSE versus the category reference (-0.13%); retain provenance when interpreting.,no
+architecture,PICASSO-rec-enhanced,0.88778854,-0.11%,PICASSO-rec-enhanced improves mean NMSE versus the category reference (-0.11%); retain provenance when interpreting.,yes
+architecture,PICASSO-rec-base,0.88872317,+0.00%,PICASSO-rec-base matches mean NMSE versus the category reference (+0.00%); retain provenance when interpreting.,yes
+architecture,PICASSO-rec-FiLM,0.89023005,+0.17%,PICASSO-rec-FiLM degrades mean NMSE versus the category reference (+0.17%); retain provenance when interpreting.,no
+architecture,PICASSO-rec-refinement,0.89123694,+0.28%,PICASSO-rec-refinement degrades mean NMSE versus the category reference (+0.28%); retain provenance when interpreting.,no
+loss,rec + pilot + delay,0.88502013,-0.03%,rec + pilot + delay improves mean NMSE versus the category reference (-0.03%); retain provenance when interpreting.,no
+loss,rec only,0.88532707,+0.00%,rec only matches mean NMSE versus the category reference (+0.00%); retain provenance when interpreting.,yes
+loss,rec + energy preservation,0.88541611,+0.01%,rec + energy preservation degrades mean NMSE versus the category reference (+0.01%); retain provenance when interpreting.,no
+loss,rec + frequency consistency,0.88729804,+0.22%,rec + frequency consistency degrades mean NMSE versus the category reference (+0.22%); retain provenance when interpreting.,no
+loss,rec + pilot consistency,0.88864707,+0.38%,rec + pilot consistency degrades mean NMSE versus the category reference (+0.38%); retain provenance when interpreting.,no
+loss,rec + delay-domain sparsity,0.89151723,+0.70%,rec + delay-domain sparsity degrades mean NMSE versus the category reference (+0.70%); retain provenance when interpreting.,no
+loss,rec + pilot + frequency,0.89199587,+0.75%,rec + pilot + frequency degrades mean NMSE versus the category reference (+0.75%); retain provenance when interpreting.,no
+loss,rec + full physics,0.89227996,+0.79%,rec + full physics degrades mean NMSE versus the category reference (+0.79%); retain provenance when interpreting.,no
+gan,no GAN (Stage 3B),0.75949831,+0.00%,no GAN (Stage 3B) matches mean NMSE versus the category reference (+0.00%); retain provenance when interpreting.,yes
+gan,feature-level GAN (Stage 3B),0.76158459,+0.27%,feature-level GAN (Stage 3B) degrades mean NMSE versus the category reference (+0.27%); retain provenance when interpreting.,no
+gan,conditioned feature-level GAN (Stage 3B),0.76614973,+0.88%,conditioned feature-level GAN (Stage 3B) degrades mean NMSE versus the category reference (+0.88%); retain provenance when interpreting.,no
+gan,output-level GAN (Stage 2BC),0.85438569,-0.37%,output-level GAN (Stage 2BC) improves mean NMSE versus the category reference (-0.37%); retain provenance when interpreting.,no
+gan,no GAN (Stage 2BC),0.85754549,+0.00%,no GAN (Stage 2BC) matches mean NMSE versus the category reference (+0.00%); retain provenance when interpreting.,yes
+gan,light adversarial loss (Stage 2BC),0.85757674,+0.00%,light adversarial loss (Stage 2BC) degrades mean NMSE versus the category reference (+0.00%); retain provenance when interpreting.,no
+channel,noisy synthetic OFDM,0.77596677,-9.84%,noisy synthetic OFDM improves mean NMSE versus the category reference (-9.84%); retain provenance when interpreting.,no
+channel,noisy random-path synthetic OFDM,0.86067338,+0.00%,noisy random-path synthetic OFDM matches mean NMSE versus the category reference (+0.00%); retain provenance when interpreting.,no
+channel,CDL-B,0.98208765,+14.11%,CDL-B degrades mean NMSE versus the category reference (+14.11%); retain provenance when interpreting.,no
+channel,CDL-C,1.01514134,+17.95%,CDL-C degrades mean NMSE versus the category reference (+17.95%); retain provenance when interpreting.,no
+channel,CDL-A,1.04830709,+21.80%,CDL-A degrades mean NMSE versus the category reference (+21.80%); retain provenance when interpreting.,no
+robustness,PICASSO-rec,0.81130922,+0.00%,PICASSO-rec matches mean NMSE versus the category reference (+0.00%); retain provenance when interpreting.,yes
+robustness,PICASSO-rec-physics,0.82301706,+1.44%,PICASSO-rec-physics degrades mean NMSE versus the category reference (+1.44%); retain provenance when interpreting.,no
+robustness,Enhanced-DnCNN,0.85062706,+4.85%,Enhanced-DnCNN degrades mean NMSE versus the category reference (+4.85%); retain provenance when interpreting.,no
+robustness,LS,0.85126823,+4.93%,LS degrades mean NMSE versus the category reference (+4.93%); retain provenance when interpreting.,no

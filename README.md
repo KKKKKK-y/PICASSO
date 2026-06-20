@@ -6,7 +6,7 @@ PICASSO-CSI is a lightweight research codebase for sparse-pilot CSI reconstructi
 
 ## Final Release Status
 
-Stages 0-4 are complete and traceable. The final default model is **PICASSO-rec**, a supervised residual reconstruction model. **PICASSO-rec-physics** is kept as the secondary physics-guided variant. **PICASSO-full / condition-aware full / GAN variants** are retained only as experimental ablations because adversarial training did not provide stable or consistent gains in the completed diagnostics.
+Stages 0-4 are complete and traceable. Stage 5A organizes their evidence into a paper-level ablation study and adds only reduced component-isolation runs. The final default model is **PICASSO-rec**, a supervised residual reconstruction model. **PICASSO-rec-physics** is kept as the secondary physics-guided variant. **PICASSO-full / condition-aware full / GAN variants** are retained only as experimental ablations because adversarial training did not provide stable or consistent gains in the completed diagnostics.
 
 The final evidence supports supervised PICASSO reconstruction as the primary path. Physics constraints are useful for analysis and consistency checks, but their measured gain is limited after Stage 3B/4. GAN training is deprecated as a primary direction for this release.
 
@@ -36,6 +36,7 @@ The final evidence supports supervised PICASSO reconstruction as the primary pat
 - **Stage 3A-L:** larger controlled diagnostic including Enhanced-DnCNN, PICASSO-rec, PICASSO-rec-physics, PICASSO-full, and PICASSO-cond-full.
 - **Stage 3B:** incremental structural enhancement and physics-loss ablation.
 - **Stage 4:** CDL-inspired realistic wireless generalization with CDL-A/B/C, pilot pattern variation, pilot contamination, and mobility/Doppler diagnostics.
+- **Stage 5A:** provenance-aware paper-level model, architecture, loss, GAN, channel-complexity, and robustness ablations with minimal gap-only runs.
 
 ## Recommended Usage
 
@@ -49,6 +50,12 @@ Run the final CDL Stage 4 protocol only when intentionally reproducing the Stage
 
 ```powershell
 conda run -n picasso python src/picasso_csi/training/run_stage4.py --config configs/stage4_cdl.yaml
+```
+
+Build the Stage 5A paper-level ablation tables. This reuses existing CSVs first and runs only the configured reduced component gaps:
+
+```powershell
+conda run -n picasso python src/picasso_csi/training/run_stage5a_ablation.py --config configs/stage5a_ablation.yaml
 ```
 
 Earlier stage runners remain available for traceability:
